@@ -128,8 +128,6 @@ AlphaconGUI::AlphaconGUI(const PlatformStyle *_platformStyle, const NetworkStyle
     encryptWalletAction(0),
     backupWalletAction(0),
     changePassphraseAction(0),
-    unlockWalletAction(0),
-    lockWalletAction(0),
     aboutQtAction(0),
     openRPCConsoleAction(0),
     openAction(0),
@@ -463,11 +461,6 @@ void AlphaconGUI::createActions()
     changePassphraseAction = new QAction(platformStyle->TextColorIcon(":/icons/key"), tr("&Change Passphrase..."), this);
     changePassphraseAction->setStatusTip(tr("Change the passphrase used for wallet encryption"));
 
-    unlockWalletAction = new QAction(platformStyle->TextColorIcon(":/icons/lock_open"), tr("&Unlock Wallet..."), this);
-    unlockWalletAction->setStatusTip(tr("Unlock wallet with passphrase used for wallet encryption"));
-    lockWalletAction = new QAction(platformStyle->TextColorIcon(":/icons/lock_closed"),  tr("&Lock Wallet"), this);
-    lockWalletAction->setToolTip(tr("Lock wallet"));
-
     signMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/edit"), tr("Sign &message..."), this);
     signMessageAction->setStatusTip(tr("Sign messages with your Alphacon addresses to prove you own them"));
     verifyMessageAction = new QAction(platformStyle->TextColorIcon(":/icons/verify"), tr("&Verify message..."), this);
@@ -506,8 +499,6 @@ void AlphaconGUI::createActions()
         connect(encryptWalletAction, SIGNAL(triggered(bool)), walletFrame, SLOT(encryptWallet(bool)));
         connect(backupWalletAction, SIGNAL(triggered()), walletFrame, SLOT(backupWallet()));
         connect(changePassphraseAction, SIGNAL(triggered()), walletFrame, SLOT(changePassphrase()));
-        connect(unlockWalletAction, SIGNAL(triggered()), walletFrame, SLOT(unlockWallet()));
-        connect(lockWalletAction, SIGNAL(triggered()), walletFrame, SLOT(lockWallet()));
         connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
         connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
         connect(usedSendingAddressesAction, SIGNAL(triggered()), walletFrame, SLOT(usedSendingAddresses()));
@@ -550,8 +541,6 @@ void AlphaconGUI::createMenuBar()
         settings->addAction(encryptWalletAction);
         settings->addAction(backupWalletAction);
         settings->addAction(changePassphraseAction);
-        settings->addAction(unlockWalletAction);
-        settings->addAction(lockWalletAction);
         settings->addSeparator();
     }
     settings->addAction(optionsAction);
@@ -718,7 +707,6 @@ void AlphaconGUI::setWalletActionsEnabled(bool enabled)
     encryptWalletAction->setEnabled(enabled);
     backupWalletAction->setEnabled(enabled);
     changePassphraseAction->setEnabled(enabled);
-    unlockWalletAction->setEnabled(enabled);
     signMessageAction->setEnabled(enabled);
     verifyMessageAction->setEnabled(enabled);
     usedSendingAddressesAction->setEnabled(enabled);
@@ -1264,8 +1252,6 @@ void AlphaconGUI::setEncryptionStatus(int status)
         encryptWalletAction->setChecked(false);
         changePassphraseAction->setEnabled(false);
         encryptWalletAction->setEnabled(true);
-        unlockWalletAction->setVisible(false);
-        lockWalletAction->setVisible(false);
         break;
     case WalletModel::Unlocked:
         labelWalletEncryptionIcon->show();
@@ -1274,8 +1260,6 @@ void AlphaconGUI::setEncryptionStatus(int status)
         encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
-        unlockWalletAction->setVisible(false);
-        lockWalletAction->setVisible(true);
         break;
     case WalletModel::Locked:
         labelWalletEncryptionIcon->show();
@@ -1284,8 +1268,6 @@ void AlphaconGUI::setEncryptionStatus(int status)
         encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
-        unlockWalletAction->setVisible(false);
-        lockWalletAction->setVisible(true);
         break;
     }
 }
@@ -1449,6 +1431,8 @@ void AlphaconGUI::toggleStakingActive()
     this->nStaking = !this->nStaking;
 
     if (this->nStaking) {
+        walletFrame->unlockWallet();
+
         for (CWalletRef pwallet : vpwallets) {
             pwallet->StartStake();
         }
