@@ -142,7 +142,7 @@
         <translation>Deschide &amp;URI...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Trimite monedele către o adresă Alphacon</translation>
     </message>
     <message>

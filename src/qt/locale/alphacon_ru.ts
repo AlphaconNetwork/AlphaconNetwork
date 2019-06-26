@@ -338,7 +338,7 @@
         <translation>Идёт переиндексация блоков на диске...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Отправить монеты на указанный адрес Alphacon</translation>
     </message>
     <message>
@@ -1380,7 +1380,7 @@
         <translation>Сумма</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Введите адрес Alphacon (например, %1)</translation>
     </message>
     <message>

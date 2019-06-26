@@ -290,7 +290,7 @@
         <translation>Kettal olevate blokkide re-indekseerimine...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Saada münte Alphaconi aadressile</translation>
     </message>
     <message>
@@ -343,7 +343,7 @@
     </message>
     <message>
         <source>Sign messages with your Alphacon addresses to prove you own them</source>
-        <translation>Omandi tõestamiseks allkirjasta sõnumid oma Alphaconi aadressiga</translation>
+        <translation>Omandi tõestamiseks allkirjasta sõnumid oman Alphaconi aadressiga</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified Alphacon addresses</source>

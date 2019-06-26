@@ -334,7 +334,7 @@
         <translation>Mengindex ulang blok di dalam disk...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Kirim koin ke alamat Alphacon</translation>
     </message>
     <message>
@@ -1144,7 +1144,7 @@
         <translation>Nilai</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Masukkan alamat Alphacon (contoh %1)</translation>
     </message>
     <message>

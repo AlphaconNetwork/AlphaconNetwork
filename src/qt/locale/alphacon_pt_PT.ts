@@ -338,7 +338,7 @@
         <translation>A reindexar os blocos no disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Enviar moedas para um endereço Alphacon</translation>
     </message>
     <message>
@@ -1054,7 +1054,7 @@
     </message>
     <message>
         <source>Connect to the Alphacon network through a SOCKS5 proxy.</source>
-        <translation>Conectar à rede da Alphacon através dum proxy SOCLS5.</translation>
+        <translation>Conectar à rede dan Alphacon através dum proxy SOCLS5.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1377,7 +1377,7 @@
         <translation>Quantia</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Entre um endereço Alphacon (ex. %1)</translation>
     </message>
     <message>

@@ -334,7 +334,7 @@
         <translation>Reindekserer blokker på harddisk...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Send til en Alphacon-adresse</translation>
     </message>
     <message>
@@ -1184,7 +1184,7 @@
         <translation>Beløp</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Oppgi en Alphacon-adresse (f.eks. %1)</translation>
     </message>
     <message>

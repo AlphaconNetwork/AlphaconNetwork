@@ -158,8 +158,8 @@
         <translation>Otvori &amp;URI...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
-        <translation>Pošalji novčiće na Alphacon adresu</translation>
+        <source>Send coins to an Alphacon address</source>
+        <translation>Pošalji novčiće nan Alphacon adresu</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>

@@ -14,6 +14,7 @@
 #include "script/standard.h"
 #include "script/sign.h"
 #include "validation.h"
+#include "chain.h"
 
 
 typedef std::vector<unsigned char> valtype;
@@ -30,25 +31,25 @@ unsigned int HaveKeys(const std::vector<valtype>& pubkeys, const CKeyStore& keys
     return nResult;
 }
 
-isminetype IsMine(const CKeyStore& keystore, const CScript& scriptPubKey, SigVersion sigversion)
+isminetype IsMine(const CKeyStore& keystore, const CScript& scriptPubKey, CBlockIndex* bestBlock, SigVersion sigversion)
 {
     bool isInvalid = false;
-    return IsMine(keystore, scriptPubKey, isInvalid, sigversion);
+    return IsMine(keystore, scriptPubKey, bestBlock, isInvalid, sigversion);
 }
 
-isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, SigVersion sigversion)
+isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, CBlockIndex* bestBlock, SigVersion sigversion)
 {
     bool isInvalid = false;
-    return IsMine(keystore, dest, isInvalid, sigversion);
+    return IsMine(keystore, dest, bestBlock, isInvalid, sigversion);
 }
 
-isminetype IsMine(const CKeyStore &keystore, const CTxDestination& dest, bool& isInvalid, SigVersion sigversion)
+isminetype IsMine(const CKeyStore &keystore, const CTxDestination& dest, CBlockIndex* bestBlock, bool& isInvalid, SigVersion sigversion)
 {
     CScript script = GetScriptForDestination(dest);
-    return IsMine(keystore, script, isInvalid, sigversion);
+    return IsMine(keystore, script, bestBlock, isInvalid, sigversion);
 }
 
-isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& isInvalid, SigVersion sigversion)
+isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, CBlockIndex* bestBlock, bool& isInvalid, SigVersion sigversion)
 {
     isInvalid = false;
 
@@ -80,7 +81,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
                 // This also applies to the P2WSH case.
                 break;
             }
-            isminetype ret = ::IsMine(keystore, GetScriptForDestination(CKeyID(uint160(vSolutions[0]))), isInvalid,
+            isminetype ret = ::IsMine(keystore, GetScriptForDestination(CKeyID(uint160(vSolutions[0]))), bestBlock, isInvalid,
                                       SIGVERSION_WITNESS_V0);
             if (ret == ISMINE_SPENDABLE || ret == ISMINE_WATCH_SOLVABLE || (ret == ISMINE_NO && isInvalid))
                 return ret;
@@ -102,7 +103,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
             CScriptID scriptID = CScriptID(uint160(vSolutions[0]));
             CScript subscript;
             if (keystore.GetCScript(scriptID, subscript)) {
-                isminetype ret = IsMine(keystore, subscript, isInvalid);
+                isminetype ret = IsMine(keystore, subscript, bestBlock, isInvalid);
                 if (ret == ISMINE_SPENDABLE || ret == ISMINE_WATCH_SOLVABLE || (ret == ISMINE_NO && isInvalid))
                     return ret;
             }
@@ -117,7 +118,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
             CScriptID scriptID = CScriptID(hash);
             CScript subscript;
             if (keystore.GetCScript(scriptID, subscript)) {
-                isminetype ret = IsMine(keystore, subscript, isInvalid, SIGVERSION_WITNESS_V0);
+                isminetype ret = IsMine(keystore, subscript, bestBlock, isInvalid, SIGVERSION_WITNESS_V0);
                 if (ret == ISMINE_SPENDABLE || ret == ISMINE_WATCH_SOLVABLE || (ret == ISMINE_NO && isInvalid))
                     return ret;
             }
@@ -143,7 +144,33 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
                 return ISMINE_SPENDABLE;
             break;
         }
-            /** TOKENS START */
+        case TX_CLTV:
+        {
+            keyID = CKeyID(uint160(vSolutions[1]));
+            if (keystore.HaveKey(keyID))
+            {
+                CScriptNum nLockTime(vSolutions[0], true, 5);
+                if (nLockTime < LOCKTIME_THRESHOLD) {
+                    // locktime is a block
+                    if (nLockTime > bestBlock->nHeight) {
+                        return ISMINE_WATCH_SOLVABLE;
+                    } else {
+                        return ISMINE_SPENDABLE;
+                    }
+                } else {
+                    // locktime is a time
+                    if (nLockTime > bestBlock->GetMedianTimePast()) {
+                        return ISMINE_WATCH_SOLVABLE;
+                    } else {
+                        return ISMINE_SPENDABLE;
+                    }
+                }
+
+            } else {
+                return ISMINE_NO;
+            }
+        }
+        /** TOKENS START */
         case TX_NEW_TOKEN: {
             if (!AreTokensDeployed())
                 return ISMINE_NO;
@@ -192,7 +219,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
                 return ISMINE_SPENDABLE;
             break;
         }
-            /** TOKENS END*/
+        /** TOKENS END*/
     }
 
     if (keystore.HaveWatchOnly(scriptPubKey)) {
@@ -201,4 +228,28 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& 
         return ProduceSignature(DummySignatureCreator(&keystore), scriptPubKey, sigs) ? ISMINE_WATCH_SOLVABLE : ISMINE_WATCH_UNSOLVABLE;
     }
     return ISMINE_NO;
+}
+
+bool isCLTV(const CKeyStore &keystore, const CScript& scriptPubKey, CScriptNum& nFreezeLockTime)
+{
+    std::vector<valtype> vSolutions;
+    txnouttype whichType;
+    if (Solver(scriptPubKey, whichType, vSolutions))
+    {
+        if (whichType == TX_SCRIPTHASH)
+        {
+            CScriptID scriptID = CScriptID(uint160(vSolutions[0]));
+            CScript subscript;
+            if (keystore.GetCScript(scriptID, subscript))
+                Solver(subscript, whichType, vSolutions);
+        }
+
+        if (whichType == TX_CLTV)
+        {
+            CScriptNum sn(vSolutions[0], true, 5);
+            nFreezeLockTime = sn.getint64();
+            return true;
+        }
+    }
+    return false;
 }

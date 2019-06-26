@@ -222,7 +222,7 @@
         <translation>Φόρτωση ευρετηρίου μπλοκ στον σκληρο δισκο...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Στείλε νομίσματα σε μια διεύθυνση alphacon</translation>
     </message>
     <message>
@@ -905,7 +905,7 @@
         <translation>Ποσό</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Εισάγετε μια διεύθυνση Alphacon (π.χ. %1)</translation>
     </message>
     <message>

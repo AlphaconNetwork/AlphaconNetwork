@@ -330,7 +330,7 @@
         <translation>Besig met herindeksering van blokke op hardeskyf...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Stuur munte na 'n Alphacon adres</translation>
     </message>
     <message>

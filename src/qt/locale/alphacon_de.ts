@@ -338,7 +338,7 @@
         <translation>Reindiziere Blöcke auf Datenträger...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Alphacons an eine Alphacon-Adresse überweisen</translation>
     </message>
     <message>
@@ -1380,7 +1380,7 @@
         <translation>Betrag</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Alphacon-Adresse eingeben (z.B. %1)</translation>
     </message>
     <message>

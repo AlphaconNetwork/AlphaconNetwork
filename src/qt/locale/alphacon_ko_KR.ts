@@ -346,7 +346,7 @@
         <translation>디스크에서 블록 다시 색인중...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Alphacon 주소로 코인 전송</translation>
     </message>
     <message>
@@ -558,6 +558,14 @@
     <message>
         <source>A fatal error occurred. Alphacon can no longer continue safely and will quit.</source>
         <translation>치명적인 오류가 발생했습니다. Alphacon을 더이상 안전하게 진행할 수 없어 곧 종료합니다.</translation>
+    </message>
+    <message>
+        <source>Start Staking</source>
+        <translation>Start Staking</translation>
+    </message>
+    <message>
+        <source>Stop Staking</source>
+        <translation>Stop Staking</translation>
     </message>
 </context>
 <context>
@@ -1477,7 +1485,7 @@
         <translation>거래액</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Alphacon 주소를 입력하기 (예. %1)</translation>
     </message>
     <message>
@@ -2230,6 +2238,10 @@
         <translation>%1을(를) %2(으)로</translation>
     </message>
     <message>
+        <source> with lock time %1</source>
+        <translation> %1 잠금 시간</translation>
+    </message>
+    <message>
         <source>Are you sure you want to send?</source>
         <translation>정말로 보내시겠습니까?</translation>
     </message>
@@ -2403,6 +2415,10 @@
     <message>
         <source>Enter a label for this address to add it to your address book</source>
         <translation>주소록에 추가하려면 라벨을 입력하세요</translation>
+    </message>
+    <message>
+        <source>Enter height or timestamp lock time for transaction (default = 0)</source>
+        <translation>지정한 기간 이후에 전송이 되도록 합니다. 단위:분</translation>
     </message>
 </context>
 <context>

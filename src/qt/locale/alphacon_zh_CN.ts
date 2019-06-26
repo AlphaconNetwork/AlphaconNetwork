@@ -338,7 +338,7 @@
         <translation>正在为数据块重建索引...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>向一个比特币地址发送比特币</translation>
     </message>
     <message>
@@ -1370,7 +1370,7 @@
         <translation>金额</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>请输入一个比特币地址 (例如 %1)</translation>
     </message>
     <message>

@@ -334,7 +334,7 @@
         <translation>Re-indicizzazione blocchi su disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Invia fondi ad un indirizzo Alphacon</translation>
     </message>
     <message>
@@ -1365,7 +1365,7 @@ Per specificare più URL separarli con una barra verticale "|".</translation>
         <translation>Importo</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Inserisci un indirizzo Alphacon (ad es. %1)</translation>
     </message>
     <message>
@@ -1931,7 +1931,7 @@ Per specificare più URL separarli con una barra verticale "|".</translation>
     <name>SendCoinsDialog</name>
     <message>
         <source>Send Coins</source>
-        <translation>Invia Alphacon</translation>
+        <translation>Invian Alphacon</translation>
     </message>
     <message>
         <source>Coin Control Features</source>
@@ -2822,7 +2822,7 @@ Per specificare più URL separarli con una barra verticale "|".</translation>
     <name>WalletModel</name>
     <message>
         <source>Send Coins</source>
-        <translation>Invia Alphacon</translation>
+        <translation>Invian Alphacon</translation>
     </message>
 </context>
 <context>

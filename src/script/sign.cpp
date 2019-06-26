@@ -23,16 +23,19 @@ TransactionSignatureCreator::TransactionSignatureCreator(const CKeyStore* keysto
 bool TransactionSignatureCreator::CreateSig(std::vector<unsigned char>& vchSig, const CKeyID& address, const CScript& scriptCode, SigVersion sigversion) const
 {
     CKey key;
-    if (!keystore->GetKey(address, key))
+    if (!keystore->GetKey(address, key)) {
         return false;
+    }
 
     // Signing with uncompressed keys is disabled in witness scripts
-    if (sigversion == SIGVERSION_WITNESS_V0 && !key.IsCompressed())
+    if (sigversion == SIGVERSION_WITNESS_V0 && !key.IsCompressed()) {
         return false;
+    }
 
     uint256 hash = SignatureHash(scriptCode, *txTo, nIn, nHashType, amount, sigversion);
-    if (!key.Sign(hash, vchSig))
+    if (!key.Sign(hash, vchSig)) {
         return false;
+    }
     vchSig.push_back((unsigned char)nHashType);
     return true;
 }
@@ -122,6 +125,19 @@ static bool SignStep(const BaseSignatureCreator& creator, const CScript& scriptP
     case TX_PUBKEY:
         keyID = CPubKey(vSolutions[0]).GetID();
         return Sign1(keyID, creator, scriptPubKey, ret, sigversion);
+
+    case TX_CLTV:
+        keyID = CKeyID(uint160(vSolutions[1]));
+        if (!Sign1(keyID, creator, scriptPubKey, ret, sigversion))
+            return false;
+        else
+        {
+            CPubKey vch;
+            creator.KeyStore().GetPubKey(keyID, vch);
+            ret.push_back(ToByteVector(vch));
+        }
+        return true;
+
     case TX_PUBKEYHASH:
         keyID = CKeyID(uint160(vSolutions[0]));
         if (!Sign1(keyID, creator, scriptPubKey, ret, sigversion))
@@ -365,6 +381,7 @@ static Stacks CombineSignatures(const CScript& scriptPubKey, const BaseSignature
         if (sigs1.script.size() >= sigs2.script.size())
             return sigs1;
         return sigs2;
+    case TX_CLTV:
     case TX_PUBKEY:
     case TX_PUBKEYHASH:
         // Signatures are bigger than placeholders or empty scripts:

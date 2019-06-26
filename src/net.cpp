@@ -2275,7 +2275,7 @@ bool CConnman::Start(CScheduler& scheduler, const Options& connOptions)
     nMaxOutboundTotalBytesSentInCycle = 0;
     nMaxOutboundCycleStartTime = 0;
 
-    LogPrintf("Connection Manager: Start");
+    LogPrintf("Connection Manager: Start\n");
 
     if (fListen && !InitBinds(connOptions.vBinds, connOptions.vWhiteBinds)) {
         if (clientInterface) {

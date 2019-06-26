@@ -178,7 +178,7 @@
         <translation>กำลังทำดัชนี ที่เก็บบล็อก ใหม่ ในดิสก์...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>ส่ง coins ไปยัง ที่เก็บ Alphacon</translation>
     </message>
     <message>

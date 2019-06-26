@@ -202,7 +202,7 @@
         <translation>Poustvarjam kazalo blokov na disku ...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Izvedite plačilo na naslov Alphacon</translation>
     </message>
     <message>
@@ -912,7 +912,7 @@
         <translation>Znesek</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Vnesite naslov Alphacon (npr. %1):</translation>
     </message>
     <message>
@@ -1177,7 +1177,7 @@
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Alphacon network.</source>
-        <translation>Neobvezno sporočilo kot priponka zahtevku za plačilo, ki bo prikazano, ko bo zahtevek odprt. Opomba: Opravljeno plačilo.prek omrežja Alphacon tega sporočila ne bo vsebovalo.</translation>
+        <translation>Neobvezno sporočilo kot priponka zahtevku za plačilo, ki bo prikazano, ko bo zahtevek odprt. Opomba: Opravljeno plačilo.prek omrežjan Alphacon tega sporočila ne bo vsebovalo.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address.</source>
@@ -1477,7 +1477,7 @@
     </message>
     <message>
         <source>A message that was attached to the alphacon: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Alphacon network.</source>
-        <translation>Sporočilo, ki ste ga pripeli na URI tipa alphacon:. Shranjeno bo skupaj s podatki o transakciji. Opomba: Sporočilo ne bo poslano preko omrežja Alphacon.</translation>
+        <translation>Sporočilo, ki ste ga pripeli na URI tipa alphacon:. Shranjeno bo skupaj s podatki o transakciji. Opomba: Sporočilo ne bo poslano preko omrežjan Alphacon.</translation>
     </message>
     <message>
         <source>Pay To:</source>

@@ -114,7 +114,7 @@
         <translation>Recreans indicem frustorum in disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Mitte nummos ad inscriptionem Alphacon</translation>
     </message>
     <message>

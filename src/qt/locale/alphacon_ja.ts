@@ -338,7 +338,7 @@
         <translation>ディスク上のブロックのインデックスを再作成中...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Alphacon アドレスにコインを送る</translation>
     </message>
     <message>
@@ -1380,7 +1380,7 @@
         <translation>総額</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Alphaconアドレスを入力してください (例 %1)</translation>
     </message>
     <message>

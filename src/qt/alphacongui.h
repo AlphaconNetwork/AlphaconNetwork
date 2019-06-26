@@ -19,6 +19,7 @@
 #include <QMenu>
 #include <QPoint>
 #include <QSystemTrayIcon>
+#include <QPushButton>
 
 class ClientModel;
 class NetworkStyle;
@@ -121,6 +122,8 @@ private:
     QAction *transferTokenAction;
     QAction *createTokenAction;
     QAction *manageTokenAction;
+    QWidget *footerWidget;
+    QPushButton *stakingButton;
     /** TOKENS END */
 
     QSystemTrayIcon *trayIcon;

@@ -338,7 +338,7 @@
         <translation>Preindexúvam bloky na disku...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Poslať alphacons na adresu</translation>
     </message>
     <message>
@@ -1376,7 +1376,7 @@
         <translation>Suma</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Zadajte alphacon adresu (napr. %1)</translation>
     </message>
     <message>
@@ -2383,7 +2383,7 @@
     </message>
     <message>
         <source>The Alphacon address the message was signed with</source>
-        <translation>Adresa Alphacon, ktorou bola podpísaná správa</translation>
+        <translation>Adresan Alphacon, ktorou bola podpísaná správa</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified Alphacon address</source>

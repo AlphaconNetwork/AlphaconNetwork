@@ -170,7 +170,7 @@
         <translation>Lemezen lévő blokkok újraindexelése...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Alphacon küldése megadott címre</translation>
     </message>
     <message>
@@ -223,7 +223,7 @@
     </message>
     <message>
         <source>Sign messages with your Alphacon addresses to prove you own them</source>
-        <translation>Üzenetek aláírása a Alphacon-címmeiddel, amivel bizonyítod, hogy a cím a sajátod</translation>
+        <translation>Üzenetek aláírása an Alphacon-címmeiddel, amivel bizonyítod, hogy a cím a sajátod</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified Alphacon addresses</source>
@@ -267,7 +267,7 @@
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to Alphacon network</source>
-        <translation><numerusform>%n aktív kapcsolat a Alphacon hálózathoz</numerusform><numerusform>%n aktív kapcsolat a Alphacon hálózathoz</numerusform></translation>
+        <translation><numerusform>%n aktív kapcsolat an Alphacon hálózathoz</numerusform><numerusform>%n aktív kapcsolat an Alphacon hálózathoz</numerusform></translation>
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>
@@ -613,7 +613,7 @@
     </message>
     <message>
         <source>Connect to the Alphacon network through a SOCKS5 proxy.</source>
-        <translation>Csatlakozás a Alphacon hálózatához SOCKS5 proxyn keresztül</translation>
+        <translation>Csatlakozás an Alphacon hálózatához SOCKS5 proxyn keresztül</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -708,7 +708,7 @@
     </message>
     <message>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Alphacon network after a connection is established, but this process has not completed yet.</source>
-        <translation>A kijelzett információ lehet, hogy elavult. A pénztárcája automatikusan szinkronizálja magát a Alphacon hálózattal miután a kapcsolat létrejön, de ez e folyamat még nem fejeződött be.</translation>
+        <translation>A kijelzett információ lehet, hogy elavult. A pénztárcája automatikusan szinkronizálja magát an Alphacon hálózattal miután a kapcsolat létrejön, de ez e folyamat még nem fejeződött be.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -776,7 +776,7 @@
         <translation>Összeg</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Ad meg egy Alphacon címet (pl: %1)</translation>
     </message>
     <message>

@@ -154,7 +154,7 @@
         <translation>Blokai iš naujo indeksuojami...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Siųsti monetas Alphacon adresui</translation>
     </message>
     <message>

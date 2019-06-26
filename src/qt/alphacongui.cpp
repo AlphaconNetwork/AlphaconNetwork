@@ -135,6 +135,8 @@ AlphaconGUI::AlphaconGUI(const PlatformStyle *_platformStyle, const NetworkStyle
     transferTokenAction(0),
     createTokenAction(0),
     manageTokenAction(0),
+    footerWidget(0),
+    stakingButton(0),
     trayIcon(0),
     trayIconMenu(0),
     notificator(0),
@@ -204,6 +206,8 @@ AlphaconGUI::AlphaconGUI(const PlatformStyle *_platformStyle, const NetworkStyle
     this->setFont(QFont("Montserrat"));
 #endif
 
+    footerWidget = new QWidget();
+
     // Create actions for the toolbar, menu bar and tray/dock icon
     // Needs walletFrame to be initialized
     createActions();
@@ -251,6 +255,7 @@ AlphaconGUI::AlphaconGUI(const PlatformStyle *_platformStyle, const NetworkStyle
         frameBlocksLayout->addWidget(labelWalletEncryptionIcon);
         frameBlocksLayout->addWidget(labelWalletHDStatusIcon);
     }
+
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelStakingIcon);
     frameBlocksLayout->addStretch();
@@ -352,7 +357,7 @@ void AlphaconGUI::createActions()
     tabGroup->addAction(overviewAction);
 
     sendCoinsAction = new QAction(platformStyle->SingleColorIconOnOff(":/icons/send", ":/icons/send"), tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a Alphacon address"));
+    sendCoinsAction->setStatusTip(tr("Send coins to an Alphacon address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
@@ -589,11 +594,23 @@ void AlphaconGUI::createToolBars()
         QWidget* mainWalletWidget = new QWidget();
         mainWalletWidget->setStyleSheet(mainWalletWidgetStyle);
 
-        QString widgetBackgroundSytleSheet = QString(".QWidget{background-color: %1}").arg(platformStyle->TopWidgetBackGroundColor().name());
+        // Set the headers widget options
+        footerWidget->setContentsMargins(0,0,0,0);
+        footerWidget->setStyleSheet(QString(".QWidget {background-color: #ffffff;}"));
+        footerWidget->setFixedHeight(50);
 
-        // Create the layout for widget to the right of the tool bar
+        stakingButton = new QPushButton(this);
+        connect(stakingButton, SIGNAL(clicked()), this, SLOT(toggleStakingActive()));
+        stakingButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        stakingButton->setText(tr("Start Staking"));
+
+        QHBoxLayout* footerLayout = new QHBoxLayout(footerWidget);
+        footerLayout->addWidget(stakingButton);
+
+        // Create the layout for widget to the top of the tool bar
         QVBoxLayout* mainFrameLayout = new QVBoxLayout(mainWalletWidget);
         mainFrameLayout->addWidget(walletFrame);
+        mainFrameLayout->addWidget(footerWidget);
         mainFrameLayout->setDirection(QBoxLayout::TopToBottom);
         mainFrameLayout->setContentsMargins(QMargins());
 
@@ -1329,6 +1346,8 @@ void AlphaconGUI::updateStakingIcon()
         nNetworkWeight /= COIN;
         labelStakingIcon->setPixmap(platformStyle->SingleColorIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
         labelStakingIcon->setToolTip(tr("Staking.<br>Your weight is %1<br>Network weight is %2<br>Expected time to earn reward is %3").arg(nWeight).arg(nNetworkWeight).arg(text));
+
+        stakingButton->setText(tr("Stop Staking"));
     } else {
         labelStakingIcon->setPixmap(platformStyle->SingleColorIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
         if (IsInitialBlockDownload()) {
@@ -1338,6 +1357,7 @@ void AlphaconGUI::updateStakingIcon()
         } else {
             labelStakingIcon->setToolTip(tr("Not staking"));
         }
+        stakingButton->setText(tr("Start Staking"));
     }
 }
 
@@ -1432,17 +1452,19 @@ void AlphaconGUI::toggleStakingActive()
 
     if (this->nStaking) {
         walletFrame->unlockWallet();
+        if (walletFrame->isWalletUnlocked()) {
+            for (CWalletRef pwallet : vpwallets) {
+                pwallet->StartStake();
+            }
 
-        for (CWalletRef pwallet : vpwallets) {
-            pwallet->StartStake();
+            updateStakingIcon();
         }
     } else {
         for (CWalletRef pwallet : vpwallets) {
             pwallet->StopStake();
         }
+        updateStakingIcon();
     }
-
-    updateStakingIcon();
 }
 
 UnitDisplayStatusBarControl::UnitDisplayStatusBarControl(const PlatformStyle *platformStyle) :

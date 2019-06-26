@@ -334,7 +334,7 @@
         <translation>Reindexando blocos no disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Enviar moedas para um endereço alphacon</translation>
     </message>
     <message>
@@ -1376,7 +1376,7 @@
         <translation>Quantidade</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Informe um endereço Alphacon (ex: %1)</translation>
     </message>
     <message>

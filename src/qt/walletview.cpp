@@ -340,7 +340,7 @@ void WalletView::changePassphrase()
 
 void WalletView::unlockWallet()
 {
-    if(!walletModel)
+    if (!walletModel)
         return;
     // Unlock wallet when requested by wallet model
     if (walletModel->getEncryptionStatus() == WalletModel::Locked)
@@ -349,6 +349,14 @@ void WalletView::unlockWallet()
         dlg.setModel(walletModel);
         dlg.exec();
     }
+}
+
+bool WalletView::isWalletUnlocked()
+{
+    if (!walletModel)
+        return false;
+
+    return walletModel->getEncryptionStatus() != WalletModel::Locked;
 }
 
 unsigned long long WalletView::updateWeight()

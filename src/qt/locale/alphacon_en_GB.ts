@@ -226,8 +226,8 @@
         <translation>Reindexing blocks on disk...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
-        <translation>Send coins to a Alphacon address</translation>
+        <source>Send coins to an Alphacon address</source>
+        <translation>Send coins to an Alphacon address</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -1008,8 +1008,8 @@
         <translation>Amount</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
-        <translation>Enter a Alphacon address (e.g. %1)</translation>
+        <source>Enter an Alphacon address (e.g. %1)</source>
+        <translation>Enter an Alphacon address (e.g. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>

@@ -290,7 +290,7 @@ UniValue setaccount(const JSONRPCRequest& request)
         strAccount = AccountFromValue(request.params[1]);
 
     // Only add the account if the address is yours.
-    if (IsMine(*pwallet, dest)) {
+    if (IsMine(*pwallet, dest, chainActive.Tip())) {
         // Detect when changing the account of an address that is the 'unused current key' of another account:
         if (pwallet->mapAddressBook.count(dest)) {
             std::string strOldAccount = pwallet->mapAddressBook[dest].name;
@@ -382,7 +382,7 @@ UniValue getaddressesbyaccount(const JSONRPCRequest& request)
     return ret;
 }
 
-static void SendMoney(CWallet * const pwallet, const CTxDestination &address, CAmount nValue, bool fSubtractFeeFromAmount, CWalletTx& wtxNew, const CCoinControl& coin_control)
+static void SendMoney(CWallet * const pwallet, const CTxDestination &address, CAmount nValue, bool fSubtractFeeFromAmount, CWalletTx& wtxNew, const CCoinControl& coin_control, int64_t lockTime = 0)
 {
     CAmount curBalance = pwallet->GetBalance();
 
@@ -398,7 +398,7 @@ static void SendMoney(CWallet * const pwallet, const CTxDestination &address, CA
     }
 
     // Parse Alphacon address
-    CScript scriptPubKey = GetScriptForDestination(address);
+    CScript scriptPubKey = GetScriptForDestination(address, lockTime);
 
     // Create and send the transaction
     CReserveKey reservekey(pwallet);
@@ -435,16 +435,16 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
             "\nArguments:\n"
             "1. \"address\"            (string, required) The alphacon address to send to.\n"
             "2. \"amount\"             (numeric or string, required) The amount in " + CURRENCY_UNIT + " to send. eg 0.1\n"
-            "3. \"comment\"            (string, optional) A comment used to store what the transaction is for. \n"
+            "3. \"lock_time\"          (integer, optional, default=0) Locktime for transaction, could be height or timestamp\n"
+            "4. \"comment\"            (string, optional) A comment used to store what the transaction is for. \n"
             "                             This is not part of the transaction, just kept in your wallet.\n"
-            "4. \"comment_to\"         (string, optional) A comment to store the name of the person or organization \n"
+            "5. \"comment_to\"         (string, optional) A comment to store the name of the person or organization \n"
             "                             to which you're sending the transaction. This is not part of the \n"
             "                             transaction, just kept in your wallet.\n"
-            "5. subtractfeefromamount  (boolean, optional, default=false) The fee will be deducted from the amount being sent.\n"
+            "6. subtractfeefromamount  (boolean, optional, default=false) The fee will be deducted from the amount being sent.\n"
             "                             The recipient will receive less alphacons than you enter in the amount field.\n"
-//            "6. replaceable            (boolean, optional) Allow this transaction to be replaced by a transaction with higher fees via BIP 125\n"
-            "6. conf_target            (numeric, optional) Confirmation target (in blocks)\n"
-            "7. \"estimate_mode\"      (string, optional, default=UNSET) The fee estimate mode, must be one of:\n"
+            "7. conf_target            (numeric, optional) Confirmation target (in blocks)\n"
+            "8. \"estimate_mode\"      (string, optional, default=UNSET) The fee estimate mode, must be one of:\n"
             "       \"UNSET\"\n"
             "       \"ECONOMICAL\"\n"
             "       \"CONSERVATIVE\"\n"
@@ -470,29 +470,34 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
     if (nAmount <= 0)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount for send");
 
+    // Lock time
+    int lockTime = 0;
+    if (!request.params[2].isNull()) {
+        lockTime = request.params[2].get_int();
+        if (lockTime < 0) {
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "lock time must be greater or equal to 0.");
+        }
+    }
+
     // Wallet comments
     CWalletTx wtx;
-    if (!request.params[2].isNull() && !request.params[2].get_str().empty())
-        wtx.mapValue["comment"] = request.params[2].get_str();
     if (!request.params[3].isNull() && !request.params[3].get_str().empty())
-        wtx.mapValue["to"]      = request.params[3].get_str();
+        wtx.mapValue["comment"] = request.params[3].get_str();
+    if (!request.params[4].isNull() && !request.params[4].get_str().empty())
+        wtx.mapValue["to"]      = request.params[4].get_str();
 
     bool fSubtractFeeFromAmount = false;
-    if (!request.params[4].isNull()) {
-        fSubtractFeeFromAmount = request.params[4].get_bool();
+    if (!request.params[5].isNull()) {
+        fSubtractFeeFromAmount = request.params[5].get_bool();
     }
 
     CCoinControl coin_control;
-//    if (!request.params[5].isNull()) {
-//        coin_control.signalRbf = request.params[5].get_bool();
-//    }
-
-    if (!request.params[5].isNull()) {
-        coin_control.m_confirm_target = ParseConfirmTarget(request.params[6]);
+    if (!request.params[6].isNull()) {
+        coin_control.m_confirm_target = ParseConfirmTarget(request.params[7]);
     }
 
-    if (!request.params[6].isNull()) {
-        if (!FeeModeFromString(request.params[7].get_str(), coin_control.m_fee_mode)) {
+    if (!request.params[7].isNull()) {
+        if (!FeeModeFromString(request.params[8].get_str(), coin_control.m_fee_mode)) {
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid estimate_mode parameter");
         }
     }
@@ -500,7 +505,7 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
 
     EnsureWalletIsUnlocked(pwallet);
 
-    SendMoney(pwallet, dest, nAmount, fSubtractFeeFromAmount, wtx, coin_control);
+    SendMoney(pwallet, dest, nAmount, fSubtractFeeFromAmount, wtx, coin_control, lockTime);
 
     return wtx.GetHash().GetHex();
 }
@@ -656,7 +661,7 @@ UniValue getreceivedbyaddress(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Alphacon address");
     }
     CScript scriptPubKey = GetScriptForDestination(dest);
-    if (!IsMine(*pwallet, scriptPubKey)) {
+    if (!IsMine(*pwallet, scriptPubKey, chainActive.Tip())) {
         return ValueFromAmount(0);
     }
 
@@ -731,7 +736,7 @@ UniValue getreceivedbyaccount(const JSONRPCRequest& request)
         for (const CTxOut& txout : wtx.tx->vout)
         {
             CTxDestination address;
-            if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*pwallet, address) && setAddress.count(address)) {
+            if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*pwallet, address, chainActive.Tip()) && setAddress.count(address)) {
                 if (wtx.GetDepthInMainChain() >= nMinDepth)
                     nAmount += txout.nValue;
             }
@@ -1029,10 +1034,6 @@ UniValue sendmany(const JSONRPCRequest& request)
         subtractFeeFromAmount = request.params[4].get_array();
 
     CCoinControl coin_control;
-//    if (!request.params[5].isNull()) {
-//        coin_control.signalRbf = request.params[5].get_bool();
-//    }
-
     if (!request.params[5].isNull()) {
         coin_control.m_confirm_target = ParseConfirmTarget(request.params[6]);
     }
@@ -1303,7 +1304,7 @@ UniValue ListReceived(CWallet * const pwallet, const UniValue& params, bool fByA
             if (!ExtractDestination(txout.scriptPubKey, address))
                 continue;
 
-            isminefilter mine = IsMine(*pwallet, address);
+            isminefilter mine = IsMine(*pwallet, address, chainActive.Tip());
             if(!(mine & filter))
                 continue;
 
@@ -1510,7 +1511,7 @@ void ListTransactions(CWallet* const pwallet, const CWalletTx& wtx, const std::s
         for (const COutputEntry& s : listSent)
         {
             UniValue entry(UniValue::VOBJ);
-            if (involvesWatchonly || (::IsMine(*pwallet, s.destination) & ISMINE_WATCH_ONLY)) {
+            if (involvesWatchonly || (::IsMine(*pwallet, s.destination, chainActive.Tip()) & ISMINE_WATCH_ONLY)) {
                 entry.push_back(Pair("involvesWatchonly", true));
             }
             entry.push_back(Pair("account", strSentAccount));
@@ -1541,7 +1542,7 @@ void ListTransactions(CWallet* const pwallet, const CWalletTx& wtx, const std::s
             if (fAllAccounts || (account == strAccount))
             {
                 UniValue entry(UniValue::VOBJ);
-                if (involvesWatchonly || (::IsMine(*pwallet, r.destination) & ISMINE_WATCH_ONLY)) {
+                if (involvesWatchonly || (::IsMine(*pwallet, r.destination, chainActive.Tip()) & ISMINE_WATCH_ONLY)) {
                     entry.push_back(Pair("involvesWatchonly", true));
                 }
                 entry.push_back(Pair("account", account));
@@ -1803,7 +1804,7 @@ UniValue listaccounts(const JSONRPCRequest& request)
 
     std::map<std::string, CAmount> mapAccountBalances;
     for (const std::pair<CTxDestination, CAddressBookData>& entry : pwallet->mapAddressBook) {
-        if (IsMine(*pwallet, entry.first) & includeWatchonly) {  // This address belongs to me
+        if (IsMine(*pwallet, entry.first, chainActive.Tip()) & includeWatchonly) {  // This address belongs to me
             mapAccountBalances[entry.second.name] = 0;
         }
     }
@@ -3376,7 +3377,7 @@ static const CRPCCommand commands[] =
     { "wallet",             "move",                     &movecmd,                  {"fromaccount","toaccount","amount","minconf","comment"} },
     { "wallet",             "sendfrom",                 &sendfrom,                 {"fromaccount","toaddress","amount","minconf","comment","comment_to"} },
     { "wallet",             "sendmany",                 &sendmany,                 {"fromaccount","amounts","minconf","comment","subtractfeefrom", "conf_target","estimate_mode"} },
-    { "wallet",             "sendtoaddress",            &sendtoaddress,            {"address","amount","comment","comment_to","subtractfeefromamount", "conf_target","estimate_mode"} },
+    { "wallet",             "sendtoaddress",            &sendtoaddress,            {"address","amount","lock_time","comment","comment_to","subtractfeefromamount", "conf_target","estimate_mode"} },
     { "wallet",             "setaccount",               &setaccount,               {"address","account"} },
     { "wallet",             "settxfee",                 &settxfee,                 {"amount"} },
     { "wallet",             "signmessage",              &signmessage,              {"address","message"} },

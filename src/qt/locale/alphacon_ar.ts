@@ -330,7 +330,7 @@
         <translation>إعادة الفهرسة الكتل على القرص ...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>ارسل عملات الى عنوان بيتكوين</translation>
     </message>
     <message>

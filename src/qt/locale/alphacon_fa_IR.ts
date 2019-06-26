@@ -206,7 +206,7 @@
         <translation>دریافت آدرس ها</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>ارسال کوین به آدرس بیت کوین</translation>
     </message>
     <message>

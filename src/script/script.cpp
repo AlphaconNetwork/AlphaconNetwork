@@ -209,15 +209,36 @@ unsigned int CScript::GetSigOpCount(const CScript& scriptSig) const
     return subscript.GetSigOpCount(true);
 }
 
+int CScript::GetScriptIndex(int index) const
+{
+    int value = (*this)[index];
+    return value;
+}
+
 bool CScript::IsPayToPublicKeyHash() const
 {
     // Extra-fast test for pay-to-pubkey-hash CScripts:
     return (this->size() == 25 &&
-	    (*this)[0] == OP_DUP &&
-	    (*this)[1] == OP_HASH160 &&
-	    (*this)[2] == 0x14 &&
-	    (*this)[23] == OP_EQUALVERIFY &&
-	    (*this)[24] == OP_CHECKSIG);
+        (*this)[0] == OP_DUP &&
+        (*this)[1] == OP_HASH160 &&
+        (*this)[2] == 0x14 &&
+        (*this)[23] == OP_EQUALVERIFY &&
+        (*this)[24] == OP_CHECKSIG);
+}
+
+bool CScript::IsPayToPublicKeyHashLocked() const
+{
+    // Extra-fast test for pay-to-pubkey-hash locked CScripts:
+    if (this->size() >= 30) {
+        int shift = (*this)[0];
+        return ((*this)[1 + shift] == OP_CHECKLOCKTIMEVERIFY &&
+            (*this)[2 + shift] == OP_DROP &&
+            (*this)[3 + shift] == OP_DUP &&
+            (*this)[4 + shift] == OP_HASH160 &&
+            (*this)[5 + shift] == 0x14 &&
+            (*this)[26 + shift] == OP_EQUALVERIFY &&
+            (*this)[27 + shift] == OP_CHECKSIG);
+    }
 }
 
 bool CScript::IsPayToScriptHash() const

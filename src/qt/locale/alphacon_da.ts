@@ -338,7 +338,7 @@
         <translation>Genindekserer blokke på disken…</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Send alphacons til en Alphacon-adresse</translation>
     </message>
     <message>
@@ -1380,7 +1380,7 @@
         <translation>Beløb</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Indtast en Alphacon-adresse (fx %1)</translation>
     </message>
     <message>

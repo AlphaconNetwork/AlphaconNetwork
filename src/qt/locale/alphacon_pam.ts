@@ -122,7 +122,7 @@
         <translation>Address king pamag-Tanggap</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Magpadalang barya king Alphacon address</translation>
     </message>
     <message>

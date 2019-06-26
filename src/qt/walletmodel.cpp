@@ -107,6 +107,11 @@ CAmount WalletModel::getImmatureBalance() const
     return wallet->GetImmatureBalance();
 }
 
+CAmount WalletModel::getLockedBalance() const
+{
+    return wallet->GetLockedBalance();
+}
+
 bool WalletModel::haveWatchOnly() const
 {
     return fHaveWatchOnly;
@@ -172,6 +177,7 @@ void WalletModel::checkBalanceChanged()
     CAmount newWatchUnconfBalance = 0;
     CAmount newWatchImmatureBalance = 0;
     CAmount newWatchOnlyStake = 0;
+    CAmount newLockedBalance = getLockedBalance();
     if (haveWatchOnly())
     {
         newWatchOnlyBalance = getWatchBalance();
@@ -191,8 +197,9 @@ void WalletModel::checkBalanceChanged()
         cachedWatchUnconfBalance = newWatchUnconfBalance;
         cachedWatchImmatureBalance = newWatchImmatureBalance;
         cachedWatchOnlyStake = newWatchOnlyStake;
+        cachedLockedBalance = newWatchOnlyStake;
         Q_EMIT balanceChanged(newBalance, newUnconfirmedBalance, newImmatureBalance, newStake,
-                            newWatchOnlyBalance, newWatchUnconfBalance, newWatchImmatureBalance, newWatchOnlyStake);
+                            newWatchOnlyBalance, newWatchUnconfBalance, newWatchImmatureBalance, newWatchOnlyStake, newLockedBalance);
     }
 }
 
@@ -275,7 +282,7 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
             setAddress.insert(rcp.address);
             ++nAddresses;
 
-            CScript scriptPubKey = GetScriptForDestination(DecodeDestination(rcp.address.toStdString()));
+            CScript scriptPubKey = GetScriptForDestination(DecodeDestination(rcp.address.toStdString()), rcp.coinLockTime);
             CRecipient recipient = {scriptPubKey, rcp.amount, rcp.fSubtractFeeFromAmount};
             vecSend.push_back(recipient);
 
@@ -647,7 +654,7 @@ bool WalletModel::getPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const
 
 bool WalletModel::IsSpendable(const CTxDestination& dest) const
 {
-    return IsMine(*wallet, dest) & ISMINE_SPENDABLE;
+    return wallet->IsMineDest(dest) & ISMINE_SPENDABLE;
 }
 
 bool WalletModel::getPrivKey(const CKeyID &address, CKey& vchPrivKeyOut) const

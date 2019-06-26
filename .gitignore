@@ -3,6 +3,7 @@ Jenkinsfile
 *.tar.gz
 
 *.exe
+*.user
 src/alphacon
 src/alphacond
 src/alphacon-cli

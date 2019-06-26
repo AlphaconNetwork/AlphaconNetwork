@@ -154,7 +154,7 @@
         <translation>Se reindexează blocurile pe disc...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Trimite monede către o adresă Alphacon</translation>
     </message>
     <message>
@@ -211,7 +211,7 @@
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified Alphacon addresses</source>
-        <translation>Verificaţi mesaje pentru a vă asigura că au fost semnate cu adresa Alphacon specificată</translation>
+        <translation>Verificaţi mesaje pentru a vă asigura că au fost semnate cu adresan Alphacon specificată</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -251,7 +251,7 @@
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to Alphacon network</source>
-        <translation><numerusform>%n conexiune activă către reţeaua Alphacon</numerusform><numerusform>%n conexiuni active către reţeaua Alphacon</numerusform><numerusform>%n de conexiuni active către reţeaua Alphacon</numerusform></translation>
+        <translation><numerusform>%n conexiune activă către reţeauan Alphacon</numerusform><numerusform>%n conexiuni active către reţeauan Alphacon</numerusform><numerusform>%n de conexiuni active către reţeauan Alphacon</numerusform></translation>
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>
@@ -665,7 +665,7 @@
     </message>
     <message>
         <source>Connect to the Alphacon network through a SOCKS5 proxy.</source>
-        <translation>Conectare la reţeaua Alphacon printr-un proxy SOCKS.</translation>
+        <translation>Conectare la reţeauan Alphacon printr-un proxy SOCKS.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -776,7 +776,7 @@
     </message>
     <message>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Alphacon network after a connection is established, but this process has not completed yet.</source>
-        <translation>Informaţiile afişate pot fi neactualizate. Portofelul dvs. se sincronizează automat cu reţeaua Alphacon după ce o conexiune este stabilită, dar acest proces nu a fost finalizat încă.</translation>
+        <translation>Informaţiile afişate pot fi neactualizate. Portofelul dvs. se sincronizează automat cu reţeauan Alphacon după ce o conexiune este stabilită, dar acest proces nu a fost finalizat încă.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -864,7 +864,7 @@
         <translation>Cantitate</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Introduceţi o adresă Alphacon (de exemplu %1)</translation>
     </message>
     <message>
@@ -1165,7 +1165,7 @@
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Alphacon network.</source>
-        <translation>Un mesaj opţional de ataşat la cererea de plată, care va fi afişat cînd cererea este deschisă. Notă: Acest mesaj nu va fi trimis cu plata către reţeaua Alphacon.</translation>
+        <translation>Un mesaj opţional de ataşat la cererea de plată, care va fi afişat cînd cererea este deschisă. Notă: Acest mesaj nu va fi trimis cu plata către reţeauan Alphacon.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address.</source>
@@ -1506,7 +1506,7 @@
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified Alphacon address</source>
-        <translation>Verificaţi mesajul pentru a vă asigura că a fost semnat cu adresa Alphacon specificată</translation>
+        <translation>Verificaţi mesajul pentru a vă asigura că a fost semnat cu adresan Alphacon specificată</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>

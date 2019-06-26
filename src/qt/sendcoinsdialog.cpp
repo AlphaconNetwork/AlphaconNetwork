@@ -397,6 +397,10 @@ void SendCoinsDialog::on_sendButton_clicked()
             recipientElement = tr("%1 to %2").arg(amount, address);
         }
 
+        if (rcp.coinLockTime > 0) {
+            recipientElement.append(tr(" with lock time %1").arg(rcp.coinLockTime));
+        }
+
         formatted.append(recipientElement);
     }
 

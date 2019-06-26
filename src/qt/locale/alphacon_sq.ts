@@ -785,7 +785,7 @@
     </message>
     <message>
         <source>Alphacon Core</source>
-        <translation>Berthama Alphacon</translation>
+        <translation>Berthaman Alphacon</translation>
     </message>
     <message>
         <source>Information</source>

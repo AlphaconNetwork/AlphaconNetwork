@@ -338,7 +338,7 @@
         <translation>Diskteki bloklar yeniden indeksleniyor...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Bir alphacon adresine alphacon gönder</translation>
     </message>
     <message>
@@ -1380,7 +1380,7 @@
         <translation>Tutar</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Bir Alphacon adresi giriniz (mesela %1)</translation>
     </message>
     <message>

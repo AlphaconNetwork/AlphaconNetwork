@@ -114,7 +114,7 @@
         <translation>Reindexando bloques en el disco...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Enviar monedas a una dirección Alphacon</translation>
     </message>
     <message>

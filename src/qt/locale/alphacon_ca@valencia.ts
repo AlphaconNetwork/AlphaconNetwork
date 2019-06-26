@@ -298,8 +298,8 @@
         <translation>S'estan reindexant els blocs al disc...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
-        <translation>Envia monedes a una adreça Alphacon</translation>
+        <source>Send coins to an Alphacon address</source>
+        <translation>Envia monedes a una adreçan Alphacon</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -355,7 +355,7 @@
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified Alphacon addresses</source>
-        <translation>Verifiqueu els missatges per assegurar-vos que han estat signats amb una adreça Alphacon específica.</translation>
+        <translation>Verifiqueu els missatges per assegurar-vos que han estat signats amb una adreçan Alphacon específica.</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -893,7 +893,7 @@
     </message>
     <message>
         <source>Connect to the Alphacon network through a SOCKS5 proxy.</source>
-        <translation>Connecta a la xarxa Alphacon a través d'un proxy SOCKS5.</translation>
+        <translation>Connecta a la xarxan Alphacon a través d'un proxy SOCKS5.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -996,7 +996,7 @@
     </message>
     <message>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Alphacon network after a connection is established, but this process has not completed yet.</source>
-        <translation>La informació mostrada pot no estar al día. El teu moneder es sincronitza automàticament amb la xarxa Alphacon un cop s'ha establit connexió, però este proces no s'ha completat encara.</translation>
+        <translation>La informació mostrada pot no estar al día. El teu moneder es sincronitza automàticament amb la xarxan Alphacon un cop s'ha establit connexió, però este proces no s'ha completat encara.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -1172,7 +1172,7 @@
         <translation>Import</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Introduïu una adreça de Alphacon (p. ex. %1)</translation>
     </message>
     <message>
@@ -1453,7 +1453,7 @@
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Alphacon network.</source>
-        <translation>Un missatge opcional que s'adjuntarà a la sol·licitud de pagament, que es mostrarà quan s'òbriga la sol·licitud. Nota: El missatge no s'enviarà amb el pagament per la xarxa Alphacon.</translation>
+        <translation>Un missatge opcional que s'adjuntarà a la sol·licitud de pagament, que es mostrarà quan s'òbriga la sol·licitud. Nota: El missatge no s'enviarà amb el pagament per la xarxan Alphacon.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address.</source>
@@ -1814,7 +1814,7 @@
     </message>
     <message>
         <source>Warning: Invalid Alphacon address</source>
-        <translation>Avís: adreça Alphacon no vàlida</translation>
+        <translation>Avís: adreçan Alphacon no vàlida</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -1849,7 +1849,7 @@
     </message>
     <message>
         <source>The Alphacon address to send the payment to</source>
-        <translation>L'adreça Alphacon on enviar el pagament</translation>
+        <translation>L'adreçan Alphacon on enviar el pagament</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -1893,7 +1893,7 @@
     </message>
     <message>
         <source>A message that was attached to the alphacon: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Alphacon network.</source>
-        <translation>Un missatge que s'ha adjuntat al alphacon: URI que s'emmagatzemarà amb la transacció per a la vostra referència. Nota: el missatge no s'enviarà a través de la xarxa Alphacon.</translation>
+        <translation>Un missatge que s'ha adjuntat al alphacon: URI que s'emmagatzemarà amb la transacció per a la vostra referència. Nota: el missatge no s'enviarà a través de la xarxan Alphacon.</translation>
     </message>
     <message>
         <source>Pay To:</source>
@@ -1938,7 +1938,7 @@
     </message>
     <message>
         <source>The Alphacon address to sign the message with</source>
-        <translation>L'adreça Alphacon amb què signar el missatge</translation>
+        <translation>L'adreçan Alphacon amb què signar el missatge</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -1970,7 +1970,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this Alphacon address</source>
-        <translation>Signa el missatge per provar que ets propietari d'esta adreça Alphacon</translation>
+        <translation>Signa el missatge per provar que ets propietari d'esta adreçan Alphacon</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -1994,11 +1994,11 @@
     </message>
     <message>
         <source>The Alphacon address the message was signed with</source>
-        <translation>L'adreça Alphacon amb què va ser signat el missatge</translation>
+        <translation>L'adreçan Alphacon amb què va ser signat el missatge</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified Alphacon address</source>
-        <translation>Verificar el missatge per assegurar-se que ha estat signat amb una adreça Alphacon específica</translation>
+        <translation>Verificar el missatge per assegurar-se que ha estat signat amb una adreçan Alphacon específica</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>

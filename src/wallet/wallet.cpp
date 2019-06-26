@@ -1297,7 +1297,12 @@ CAmount CWallet::GetDebit(const CTxIn &txin, const isminefilter& filter, CTokenO
 
 isminetype CWallet::IsMine(const CTxOut& txout) const
 {
-    return ::IsMine(*this, txout.scriptPubKey);
+    return ::IsMine(*this, txout.scriptPubKey, chainActive.Tip());
+}
+
+isminetype CWallet::IsMineDest(const CTxDestination &dest) const
+{
+    return ::IsMine(*this, dest, chainActive.Tip());
 }
 
 CAmount CWallet::GetCredit(const CTxOut& txout, const isminefilter& filter) const
@@ -1316,7 +1321,7 @@ bool CWallet::IsChange(const CTxOut& txout) const
     // a better way of identifying which outputs are 'the send' and which are
     // 'the change' will need to be implemented (maybe extend CWalletTx to remember
     // which output, if any, was change).
-    if (::IsMine(*this, txout.scriptPubKey))
+    if (::IsMine(*this, txout.scriptPubKey, chainActive.Tip()))
     {
         CTxDestination address;
         if (!ExtractDestination(txout.scriptPubKey, address))
@@ -1878,6 +1883,36 @@ CAmount CWalletTx::GetAvailableCredit(bool fUseCache) const
     return nCredit;
 }
 
+CAmount CWalletTx::GetLockedCredit(bool fUseCache) const
+{
+    if (pwallet == nullptr)
+        return 0;
+
+    // Must wait until coinbase is safely deep enough in the chain before valuing it
+    if ((IsCoinBase() || IsCoinStake()) && GetBlocksToMaturity() > 0)
+        return 0;
+
+    if (fUseCache && fLockedCreditCached)
+        return nLockedCreditCached;
+
+    CAmount nCredit = 0;
+    uint256 hashTx = GetHash();
+    for (unsigned int i = 0; i < tx->vout.size(); i++)
+    {
+        if (!pwallet->IsSpent(hashTx, i))
+        {
+            const CTxOut &txout = tx->vout[i];
+            nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_SOLVABLE);
+            if (!MoneyRange(nCredit))
+                throw std::runtime_error(std::string(__func__) + " : value out of range");
+        }
+    }
+
+    nLockedCreditCached = nCredit;
+    fLockedCreditCached = true;
+    return nCredit;
+}
+
 CAmount CWalletTx::GetImmatureWatchOnlyCredit(const bool& fUseCache) const
 {
     if ((IsCoinBase() || IsCoinStake()) && GetBlocksToMaturity() > 0 && IsInMainChain())
@@ -2044,7 +2079,23 @@ CAmount CWallet::GetBalance() const
         {
             const CWalletTx* pcoin = &(*it).second;
             if (pcoin->IsTrusted())
-                nTotal += pcoin->GetAvailableCredit();
+                nTotal += pcoin->GetAvailableCredit(false);
+        }
+    }
+
+    return nTotal;
+}
+
+CAmount CWallet::GetLockedBalance() const
+{
+    CAmount nTotal = 0;
+    {
+        LOCK2(cs_main, cs_wallet);
+        for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it)
+        {
+            const CWalletTx* pcoin = &(*it).second;
+            if (pcoin->IsTrusted())
+                nTotal += pcoin->GetLockedCredit(false);
         }
     }
 
@@ -2060,7 +2111,7 @@ CAmount CWallet::GetUnconfirmedBalance() const
         {
             const CWalletTx* pcoin = &(*it).second;
             if (!pcoin->IsTrusted() && pcoin->GetDepthInMainChain() == 0 && pcoin->InMempool())
-                nTotal += pcoin->GetAvailableCredit();
+                nTotal += pcoin->GetAvailableCredit(false);
         }
     }
     return nTotal;
@@ -2074,7 +2125,7 @@ CAmount CWallet::GetImmatureBalance() const
         for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it)
         {
             const CWalletTx* pcoin = &(*it).second;
-            nTotal += pcoin->GetImmatureCredit();
+            nTotal += pcoin->GetImmatureCredit(false);
         }
     }
     return nTotal;
@@ -2089,7 +2140,7 @@ CAmount CWallet::GetWatchOnlyBalance() const
         {
             const CWalletTx* pcoin = &(*it).second;
             if (pcoin->IsTrusted())
-                nTotal += pcoin->GetAvailableWatchOnlyCredit();
+                nTotal += pcoin->GetAvailableWatchOnlyCredit(false);
         }
     }
 
@@ -2105,7 +2156,7 @@ CAmount CWallet::GetUnconfirmedWatchOnlyBalance() const
         {
             const CWalletTx* pcoin = &(*it).second;
             if (!pcoin->IsTrusted() && pcoin->GetDepthInMainChain() == 0 && pcoin->InMempool())
-                nTotal += pcoin->GetAvailableWatchOnlyCredit();
+                nTotal += pcoin->GetAvailableWatchOnlyCredit(false);
         }
     }
     return nTotal;
@@ -2119,7 +2170,7 @@ CAmount CWallet::GetImmatureWatchOnlyBalance() const
         for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it)
         {
             const CWalletTx* pcoin = &(*it).second;
-            nTotal += pcoin->GetImmatureWatchOnlyCredit();
+            nTotal += pcoin->GetImmatureWatchOnlyCredit(false);
         }
     }
     return nTotal;
@@ -3578,7 +3629,7 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
     if (GetRandInt(10) == 0)
         txNew.nLockTime = std::max(0, (int)txNew.nLockTime - GetRandInt(100));
 
-    assert(txNew.nLockTime <= (unsigned int)chainActive.Height());
+    // assert(txNew.nLockTime <= (unsigned int)chainActive.Height());
     assert(txNew.nLockTime < LOCKTIME_THRESHOLD);
     FeeCalculation feeCalc;
     CAmount nFeeNeeded;
@@ -3795,9 +3846,18 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
                 // behavior."
 //                const uint32_t nSequence = coin_control.signalRbf ? MAX_BIP125_RBF_SEQUENCE : (CTxIn::SEQUENCE_FINAL - 1);
                 const uint32_t nSequence = CTxIn::SEQUENCE_FINAL - 1;
-                for (const auto& coin : setCoins)
+                for (const auto& coin : setCoins) {
                     txNew.vin.push_back(CTxIn(coin.outpoint,CScript(),
                                               nSequence));
+
+                    // If the input is a Freeze CLTV lock-by-blocktime then update the txNew.nLockTime
+                    CScriptNum nFreezeLockTime(0);
+                    if (isCLTV(*this, coin.txout.scriptPubKey, nFreezeLockTime))
+                    {
+                        if (nFreezeLockTime.getint64() > LOCKTIME_THRESHOLD)
+                            txNew.nLockTime = chainActive.Tip()->GetMedianTimePast();
+                    }
+                }
 
                 /** TOKENS START */
                 if (AreTokensDeployed()) {
@@ -3812,10 +3872,7 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
                 tempSet.insert(setTokens.begin(), setTokens.end());
 
                 // Fill in dummy signatures for fee calculation.
-                if (!DummySignTx(txNew, tempSet)) {
-                    strFailReason = _("Signing transaction for fee calculation failed");
-                    return false;
-                }
+                DummySignTx(txNew, tempSet);
 
                 nBytes = GetVirtualTransactionSize(txNew);
 
@@ -4174,7 +4231,7 @@ bool CWallet::SetAddressBook(const CTxDestination& address, const std::string& s
         if (!strPurpose.empty()) /* update purpose only if requested */
             mapAddressBook[address].purpose = strPurpose;
     }
-    NotifyAddressBookChanged(this, address, strName, ::IsMine(*this, address) != ISMINE_NO,
+    NotifyAddressBookChanged(this, address, strName, ::IsMine(*this, address, chainActive.Tip()) != ISMINE_NO,
                              strPurpose, (fUpdated ? CT_UPDATED : CT_NEW) );
     if (!strPurpose.empty() && !CWalletDB(*dbw).WritePurpose(EncodeDestination(address), strPurpose))
         return false;
@@ -4195,7 +4252,7 @@ bool CWallet::DelAddressBook(const CTxDestination& address)
         mapAddressBook.erase(address);
     }
 
-    NotifyAddressBookChanged(this, address, "", ::IsMine(*this, address) != ISMINE_NO, "", CT_DELETED);
+    NotifyAddressBookChanged(this, address, "", ::IsMine(*this, address, chainActive.Tip()) != ISMINE_NO, "", CT_DELETED);
 
     CWalletDB(*dbw).ErasePurpose(EncodeDestination(address));
     return CWalletDB(*dbw).EraseName(EncodeDestination(address));

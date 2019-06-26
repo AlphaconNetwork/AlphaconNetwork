@@ -338,8 +338,8 @@
         <translation>Ladataan lohkoindeksiä...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
-        <translation>Lähetä kolikoita Alphacon-osoitteeseen</translation>
+        <source>Send coins to an Alphacon address</source>
+        <translation>Lähetä kolikoitan Alphacon-osoitteeseen</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -383,7 +383,7 @@
     </message>
     <message>
         <source>Show or hide the main Window</source>
-        <translation>Näytä tai piilota Alphacon-ikkuna</translation>
+        <translation>Näytä tai piilotan Alphacon-ikkuna</translation>
     </message>
     <message>
         <source>Encrypt the private keys that belong to your wallet</source>
@@ -391,7 +391,7 @@
     </message>
     <message>
         <source>Sign messages with your Alphacon addresses to prove you own them</source>
-        <translation>Allekirjoita viestisi omalla Alphacon -osoitteellasi todistaaksesi, että omistat ne</translation>
+        <translation>Allekirjoita viestisi omallan Alphacon -osoitteellasi todistaaksesi, että omistat ne</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified Alphacon addresses</source>
@@ -479,7 +479,7 @@
     </message>
     <message>
         <source>Show the %1 help message to get a list with possible Alphacon command-line options</source>
-        <translation>Näytä %1 ohjeet saadaksesi listan mahdollisista Alphaconin komentorivivalinnoista</translation>
+        <translation>Näytä %1 ohjeet saadaksesi listan mahdollisistan Alphaconin komentorivivalinnoista</translation>
     </message>
     <message>
         <source>%1 client</source>
@@ -1021,7 +1021,7 @@
     </message>
     <message>
         <source>Automatically open the Alphacon client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Avaa Alphacon-asiakasohjelman portti reitittimellä automaattisesti. Tämä toimii vain, jos reitittimesi tukee UPnP:tä ja se on käytössä.</translation>
+        <translation>Avaan Alphacon-asiakasohjelman portti reitittimellä automaattisesti. Tämä toimii vain, jos reitittimesi tukee UPnP:tä ja se on käytössä.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1252,7 +1252,7 @@
         <translation>Määrä</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Syötä Alphacon-osoite (esim. %1)</translation>
     </message>
     <message>

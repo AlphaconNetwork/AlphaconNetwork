@@ -63,11 +63,11 @@
     </message>
     <message>
         <source>These are your Alphacon addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Detta är dina Alphacon adresser för att skicka betalningar. Kolla alltid summan och den mottagande adressen innan du skickar Alphacons.</translation>
+        <translation>Detta är dinan Alphacon adresser för att skicka betalningar. Kolla alltid summan och den mottagande adressen innan du skickar Alphacons.</translation>
     </message>
     <message>
         <source>These are your Alphacon addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Detta är dina Alphacon adresser för att ta emot betalningar. Det rekommenderas att använda en ny mottagningsadress för varje transaktion.</translation>
+        <translation>Detta är dinan Alphacon adresser för att ta emot betalningar. Det rekommenderas att använda en ny mottagningsadress för varje transaktion.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -339,7 +339,7 @@ Var vänlig och försök igen.</translation>
         <translation>Återindexerar block på disken...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Skicka alphacons till en Alphacon-adress</translation>
     </message>
     <message>
@@ -480,7 +480,7 @@ Var vänlig och försök igen.</translation>
     </message>
     <message>
         <source>Show the %1 help message to get a list with possible Alphacon command-line options</source>
-        <translation>Visa %1 hjälpmeddelande för att få en lista med möjliga Alphacon kommandoradsalternativ.</translation>
+        <translation>Visa %1 hjälpmeddelande för att få en lista med möjligan Alphacon kommandoradsalternativ.</translation>
     </message>
     <message>
         <source>%1 client</source>
@@ -1373,7 +1373,7 @@ Var vänlig och försök igen.</translation>
         <translation>Mängd</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Ange en Alphacon-adress (t.ex. %1)</translation>
     </message>
     <message>
@@ -2379,7 +2379,7 @@ Var vänlig och försök igen.</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified Alphacon address</source>
-        <translation>Verifiera meddelandet för att vara säker på att den var signerad med den angivna Alphacon-adressen</translation>
+        <translation>Verifiera meddelandet för att vara säker på att den var signerad med den angivnan Alphacon-adressen</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -2894,7 +2894,7 @@ Var vänlig och försök igen.</translation>
     <name>WalletModel</name>
     <message>
         <source>Send Coins</source>
-        <translation>Skicka Alphacons</translation>
+        <translation>Skickan Alphacons</translation>
     </message>
 </context>
 <context>

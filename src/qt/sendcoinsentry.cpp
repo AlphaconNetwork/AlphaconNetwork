@@ -39,6 +39,7 @@ SendCoinsEntry::SendCoinsEntry(const PlatformStyle *_platformStyle, QWidget *par
         ui->payToLayout->setSpacing(4);
 #if QT_VERSION >= 0x040700
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
+    ui->coinLockTime->setPlaceholderText(tr("Enter height or timestamp lock time for transaction (default = 0)"));
 #endif
 
     // normal alphacon address field
@@ -67,9 +68,13 @@ SendCoinsEntry::SendCoinsEntry(const PlatformStyle *_platformStyle, QWidget *par
     ui->messageLabel->setStyleSheet(STRING_LABEL_COLOR);
     ui->messageLabel->setFont(GUIUtil::getSubLabelFont());
 
+    ui->lockTimeLabel->setStyleSheet(STRING_LABEL_COLOR);
+    ui->lockTimeLabel->setFont(GUIUtil::getSubLabelFont());
+
     ui->checkboxSubtractFeeFromAmount->setStyleSheet(QString(".QCheckBox{ %1; }").arg(STRING_LABEL_COLOR));
     ui->payTo->setFont(GUIUtil::getSubLabelFont());
     ui->addAsLabel->setFont(GUIUtil::getSubLabelFont());
+    ui->coinLockTime->setFont(GUIUtil::getSubLabelFont());
     ui->payAmount->setFont(GUIUtil::getSubLabelFont());
     ui->messageTextLabel->setFont(GUIUtil::getSubLabelFont());
 }
@@ -118,6 +123,7 @@ void SendCoinsEntry::clear()
     // clear UI elements for normal payment
     ui->payTo->clear();
     ui->addAsLabel->clear();
+    ui->coinLockTime->clear();
     ui->payAmount->clear();
     ui->checkboxSubtractFeeFromAmount->setCheckState(Qt::Unchecked);
     ui->messageTextLabel->clear();
@@ -177,6 +183,14 @@ bool SendCoinsEntry::validate()
         retval = false;
     }
 
+    if (ui->coinLockTime->text() != "") {
+        QRegExp re("\\d*");
+        if (!re.exactMatch(ui->coinLockTime->text())) {
+            ui->coinLockTime->setValid(false);
+            retval = false;
+        }
+    }
+
     return retval;
 }
 
@@ -189,6 +203,12 @@ SendCoinsRecipient SendCoinsEntry::getValue()
     // Normal payment
     recipient.address = ui->payTo->text();
     recipient.label = ui->addAsLabel->text();
+    recipient.label = ui->addAsLabel->text();
+    if (ui->coinLockTime->text() != "") {
+        recipient.coinLockTime = ui->coinLockTime->text().toInt();
+    } else {
+        recipient.coinLockTime = 0;
+    }
     recipient.amount = ui->payAmount->value();
     recipient.message = ui->messageTextLabel->text();
     recipient.fSubtractFeeFromAmount = (ui->checkboxSubtractFeeFromAmount->checkState() == Qt::Checked);

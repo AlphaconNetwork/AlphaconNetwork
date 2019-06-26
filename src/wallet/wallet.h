@@ -350,6 +350,7 @@ public:
     mutable bool fImmatureCreditCached;
     mutable bool fImmatureStakeCreditCached;
     mutable bool fAvailableCreditCached;
+    mutable bool fLockedCreditCached;
     mutable bool fWatchDebitCached;
     mutable bool fWatchCreditCached;
     mutable bool fImmatureWatchCreditCached;
@@ -360,6 +361,7 @@ public:
     mutable CAmount nImmatureCreditCached;
     mutable CAmount nImmatureStakeCreditCached;
     mutable CAmount nAvailableCreditCached;
+    mutable CAmount nLockedCreditCached;
     mutable CAmount nWatchDebitCached;
     mutable CAmount nWatchCreditCached;
     mutable CAmount nImmatureWatchCreditCached;
@@ -391,6 +393,7 @@ public:
         fImmatureCreditCached = false;
         fImmatureStakeCreditCached = false;
         fAvailableCreditCached = false;
+        fLockedCreditCached = false;
         fImmatureCreditCached = false;
         fWatchDebitCached = false;
         fWatchCreditCached = false;
@@ -401,7 +404,7 @@ public:
         nCreditCached = 0;
         nImmatureCreditCached = 0;
         nImmatureStakeCreditCached = 0;
-        nAvailableCreditCached = 0;
+        nLockedCreditCached = 0;
         nWatchDebitCached = 0;
         nWatchCreditCached = 0;
         nAvailableWatchCreditCached = 0;
@@ -458,6 +461,7 @@ public:
     {
         fCreditCached = false;
         fAvailableCreditCached = false;
+        fLockedCreditCached = false;
         fImmatureCreditCached = false;
         fWatchDebitCached = false;
         fWatchCreditCached = false;
@@ -479,6 +483,7 @@ public:
     CAmount GetImmatureCredit(bool fUseCache=true) const;
     CAmount GetImmatureStakeCredit(bool fUseCache=true) const;
     CAmount GetAvailableCredit(bool fUseCache=true) const;
+    CAmount GetLockedCredit(bool fUseCache=true) const;
     CAmount GetImmatureWatchOnlyCredit(const bool& fUseCache=true) const;
     CAmount GetAvailableWatchOnlyCredit(const bool& fUseCache=true) const;
     CAmount GetChange() const;
@@ -1025,6 +1030,7 @@ public:
     CAmount GetAvailableBalance(const CCoinControl* coinControl = nullptr) const;
     CAmount GetStake() const;
     CAmount GetWatchOnlyStake() const;
+    CAmount GetLockedBalance() const;
 
     /**
      * Insert additional inputs into the transaction by
@@ -1101,6 +1107,7 @@ public:
     CAmount GetDebit(const CTxIn& txin, const isminefilter& filter) const;
     CAmount GetDebit(const CTxIn& txin, const isminefilter& filter, CTokenOutputEntry& tokenData) const;
     isminetype IsMine(const CTxOut& txout) const;
+    isminetype IsMineDest(const CTxDestination &dest) const;
     CAmount GetCredit(const CTxOut& txout, const isminefilter& filter) const;
     bool IsChange(const CTxOut& txout) const;
     CAmount GetChange(const CTxOut& txout) const;
@@ -1301,9 +1308,16 @@ public:
 // Helper for producing a bunch of max-sized low-S signatures (eg 72 bytes)
 // ContainerType is meant to hold pair<CWalletTx *, int>, and be iterable
 // so that each entry corresponds to each vIn, in order.
+// Returns true if all inputs could be signed normally, false if any were padded out for sizing purposes.
 template <typename ContainerType>
 bool CWallet::DummySignTx(CMutableTransaction &txNew, const ContainerType &coins) const
 {
+    bool allSigned = true;
+
+    // pad past max expected sig length (256)
+    const std::string zeros = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+    const unsigned char* cstrZeros = (unsigned char*)zeros.c_str();
+
     // Fill in dummy signatures for fee calculation.
     int nIn = 0;
     for (const auto& coin : coins)
@@ -1313,14 +1327,18 @@ bool CWallet::DummySignTx(CMutableTransaction &txNew, const ContainerType &coins
 
         if (!ProduceSignature(DummySignatureCreator(this), scriptPubKey, sigdata))
         {
-            return false;
+            // just add dummy 256 bytes as sigdata if this fails (can't necessarily sign for all inputs)
+            CScript dummyScript = CScript(cstrZeros, cstrZeros + 256);
+            SignatureData dummyData = SignatureData(dummyScript);
+            UpdateTransaction(txNew, nIn, dummyData);
+            allSigned = false;
         } else {
             UpdateTransaction(txNew, nIn, sigdata);
         }
 
         nIn++;
     }
-    return true;
+    return allSigned;
 }
 
 #endif // ALPHACON_WALLET_WALLET_H

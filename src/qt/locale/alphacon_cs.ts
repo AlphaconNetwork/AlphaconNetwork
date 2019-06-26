@@ -338,7 +338,7 @@
         <translation>Vytvářím nový index bloků na disku...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Pošli mince na alphaconovou adresu</translation>
     </message>
     <message>
@@ -1380,7 +1380,7 @@
         <translation>Částka</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Zadej alphaconovou adresu (např. %1)</translation>
     </message>
     <message>

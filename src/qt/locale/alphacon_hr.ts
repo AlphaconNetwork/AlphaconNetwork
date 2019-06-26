@@ -174,7 +174,7 @@
         <translation>Re-indeksiranje blokova na disku...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Slanje novca na alphacon adresu</translation>
     </message>
     <message>
@@ -271,7 +271,7 @@
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to Alphacon network</source>
-        <translation><numerusform>%n aktivna veza na Alphacon mrežu</numerusform><numerusform>%n aktivnih veza na Alphacon mrežu</numerusform><numerusform>%n aktivnih veza na Alphacon mrežu</numerusform></translation>
+        <translation><numerusform>%n aktivna veza nan Alphacon mrežu</numerusform><numerusform>%n aktivnih veza nan Alphacon mrežu</numerusform><numerusform>%n aktivnih veza nan Alphacon mrežu</numerusform></translation>
     </message>
     <message numerus="yes">
         <source>Processed %n block(s) of transaction history.</source>

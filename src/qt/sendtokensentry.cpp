@@ -47,7 +47,7 @@ SendTokensEntry::SendTokensEntry(const PlatformStyle *_platformStyle, const QStr
         ui->payToLayout->setSpacing(4);
 #if QT_VERSION >= 0x040700
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
-    ui->addAsLabelLockTime->setPlaceholderText(tr("Enter height or timestamp lock time for token transfer (default = 0)"));
+    ui->tokenLockTime->setPlaceholderText(tr("Enter height or timestamp lock time for token transfer (default = 0)"));
 #endif
 
     // normal alphacon address field
@@ -129,7 +129,7 @@ SendTokensEntry::SendTokensEntry(const PlatformStyle *_platformStyle, const QStr
     ui->administratorCheckbox->setFont(GUIUtil::getSubLabelFont());
     ui->payTo->setFont(GUIUtil::getSubLabelFont());
     ui->addAsLabel->setFont(GUIUtil::getSubLabelFont());
-    ui->addAsLabelLockTime->setFont(GUIUtil::getSubLabelFont());
+    ui->tokenLockTime->setFont(GUIUtil::getSubLabelFont());
     ui->payTokenAmount->setFont(GUIUtil::getSubLabelFont());
     ui->messageTextLabel->setFont(GUIUtil::getSubLabelFont());
     ui->tokenAmountLabel->setFont(GUIUtil::getSubLabelFont());
@@ -180,7 +180,7 @@ void SendTokensEntry::clear()
     // clear UI elements for normal payment
     ui->payTo->clear();
     ui->addAsLabel->clear();
-    ui->addAsLabelLockTime->clear();
+    ui->tokenLockTime->clear();
     ui->messageTextLabel->clear();
     ui->messageTextLabel->hide();
     ui->messageLabel->hide();
@@ -235,10 +235,10 @@ bool SendTokensEntry::validate()
         retval = false;
     }
 
-    if (ui->addAsLabelLockTime->text() != "") {
+    if (ui->tokenLockTime->text() != "") {
         QRegExp re("\\d*");
-        if (!re.exactMatch(ui->addAsLabelLockTime->text())) {
-            ui->addAsLabelLockTime->setValid(false);
+        if (!re.exactMatch(ui->tokenLockTime->text())) {
+            ui->tokenLockTime->setValid(false);
             retval = false;
         }
     }
@@ -258,8 +258,8 @@ SendTokensRecipient SendTokensEntry::getValue()
     recipient.tokenName = ui->tokenSelectionBox->currentText();
     recipient.address = ui->payTo->text();
     recipient.label = ui->addAsLabel->text();
-    if (ui->addAsLabelLockTime->text() != "") {
-        recipient.tokenLockTime = ui->addAsLabelLockTime->text().toInt();
+    if (ui->tokenLockTime->text() != "") {
+        recipient.tokenLockTime = ui->tokenLockTime->text().toInt();
     } else {
         recipient.tokenLockTime = 0;
     }
@@ -475,8 +475,8 @@ void SendTokensEntry::switchAdministratorList(bool fSwitchStatus)
         ui->payTokenAmount->setValue(1); // When using TokenAmountField, you must use 1 instead of 1 * COIN, because of the way that TokenAmountField uses the unit and value to display the amount
         ui->payTokenAmount->setDisabled(true);
 
-        ui->addAsLabelLockTime->setDisabled(true);
-        ui->addAsLabelLockTime->clear();
+        ui->tokenLockTime->setDisabled(true);
+        ui->tokenLockTime->clear();
 
         ui->tokenAmountLabel->clear();
 
@@ -502,8 +502,8 @@ void SendTokensEntry::switchAdministratorList(bool fSwitchStatus)
             ui->payTokenAmount->setDisabled(false);
             ui->tokenAmountLabel->clear();
 
-            ui->addAsLabelLockTime->setDisabled(false);
-            ui->addAsLabelLockTime->clear();
+            ui->tokenLockTime->setDisabled(false);
+            ui->tokenLockTime->clear();
 
             ui->tokenSelectionBox->setFocus();
         } else {

@@ -57,6 +57,8 @@ public:
     // If from a payment request, this is used for storing the memo
     QString message;
 
+    int64_t coinLockTime; // memory only
+
     // If from a payment request, paymentRequest.IsInitialized() will be true
     PaymentRequestPlus paymentRequest;
     // Empty if no authentication or invalid signature/cert/etc.
@@ -203,6 +205,7 @@ public:
     CAmount getBalance(const CCoinControl *coinControl = nullptr) const;
     CAmount getUnconfirmedBalance() const;
     CAmount getImmatureBalance() const;
+    CAmount getLockedBalance() const;
     CAmount getStake() const;
     bool haveWatchOnly() const;
     CAmount getWatchBalance() const;
@@ -323,6 +326,7 @@ private:
     CAmount cachedWatchUnconfBalance;
     CAmount cachedWatchImmatureBalance;
     CAmount cachedWatchOnlyStake;
+    CAmount cachedLockedBalance;
     EncryptionStatus cachedEncryptionStatus;
     int cachedNumBlocks;
 
@@ -335,7 +339,7 @@ private:
 Q_SIGNALS:
     // Signal that balance in wallet changed
     void balanceChanged(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, const CAmount& stake,
-                        const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance, const CAmount& watchOnlyStake);
+                        const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance, const CAmount& watchOnlyStake, const CAmount& lockedBalance);
 
     // Encryption status of wallet changed
     void encryptionStatusChanged(int status);

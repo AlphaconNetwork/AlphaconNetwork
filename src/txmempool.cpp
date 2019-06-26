@@ -443,6 +443,13 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
             CMempoolAddressDelta delta(entry.GetTime(), prevout.nValue * -1, input.prevout.hash, input.prevout.n);
             mapAddress.insert(std::make_pair(key, delta));
             inserted.push_back(key);
+        } else if (prevout.scriptPubKey.IsPayToPublicKeyHashLocked()) {
+            int offset = prevout.scriptPubKey.GetScriptIndex();
+            std::vector<unsigned char> hashBytes(prevout.scriptPubKey.begin() + (6 + offset), prevout.scriptPubKey.begin() + (26 + offset));
+            CMempoolAddressDeltaKey key(1, uint160(hashBytes), ALP, txhash, j, 1);
+            CMempoolAddressDelta delta(entry.GetTime(), prevout.nValue * -1, input.prevout.hash, input.prevout.n);
+            mapAddress.insert(std::make_pair(key, delta));
+            inserted.push_back(key);
         } else if (prevout.scriptPubKey.IsPayToPublicKey()) {
             uint160 hashBytes(Hash160(prevout.scriptPubKey.begin()+1, prevout.scriptPubKey.end()-1));
             CMempoolAddressDeltaKey key(1, hashBytes, ALP, txhash, j, 1);
@@ -475,6 +482,13 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
             inserted.push_back(key);
         } else if (out.scriptPubKey.IsPayToPublicKeyHash()) {
             std::vector<unsigned char> hashBytes(out.scriptPubKey.begin()+3, out.scriptPubKey.begin()+23);
+            std::pair<addressDeltaMap::iterator,bool> ret;
+            CMempoolAddressDeltaKey key(1, uint160(hashBytes), ALP, txhash, k, 0);
+            mapAddress.insert(std::make_pair(key, CMempoolAddressDelta(entry.GetTime(), out.nValue)));
+            inserted.push_back(key);
+        }  else if (out.scriptPubKey.IsPayToPublicKeyHashLocked()) {
+            int offset = out.scriptPubKey.GetScriptIndex();
+            std::vector<unsigned char> hashBytes(out.scriptPubKey.begin() + (6 + offset), out.scriptPubKey.begin() + (26 + offset));
             std::pair<addressDeltaMap::iterator,bool> ret;
             CMempoolAddressDeltaKey key(1, uint160(hashBytes), ALP, txhash, k, 0);
             mapAddress.insert(std::make_pair(key, CMempoolAddressDelta(entry.GetTime(), out.nValue)));
@@ -570,6 +584,10 @@ void CTxMemPool::addSpentIndex(const CTxMemPoolEntry &entry, const CCoinsViewCac
             addressType = 2;
         } else if (prevout.scriptPubKey.IsPayToPublicKeyHash()) {
             addressHash = uint160(std::vector<unsigned char> (prevout.scriptPubKey.begin()+3, prevout.scriptPubKey.begin()+23));
+            addressType = 1;
+        }  else if (prevout.scriptPubKey.IsPayToPublicKeyHashLocked()) {
+            int offset = prevout.scriptPubKey.GetScriptIndex();
+            addressHash = uint160(std::vector<unsigned char> (prevout.scriptPubKey.begin() + (6 + offset), prevout.scriptPubKey.begin() + (6 + offset)));
             addressType = 1;
         } else if (prevout.scriptPubKey.IsPayToPublicKey()) {
             addressHash = Hash160(prevout.scriptPubKey.begin()+1, prevout.scriptPubKey.end()-1);

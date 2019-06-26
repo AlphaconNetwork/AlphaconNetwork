@@ -81,7 +81,7 @@ bool IsStandard(const CScript& scriptPubKey, txnouttype& whichType, const bool w
           return false;
     else if (!witnessEnabled && (whichType == TX_WITNESS_V0_KEYHASH || whichType == TX_WITNESS_V0_SCRIPTHASH))
         return false;
-    else if (whichType == TX_TRANSFER_TOKEN || whichType == TX_REISSUE_TOKEN || whichType == TX_NEW_TOKEN)
+    else if (whichType == TX_TRANSFER_TOKEN || whichType == TX_REISSUE_TOKEN || whichType == TX_NEW_TOKEN || whichType == TX_CLTV)
         return true;
 
     return whichType != TX_NONSTANDARD ;

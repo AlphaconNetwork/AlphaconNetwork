@@ -238,7 +238,7 @@
         <translation>Réindexer les blocs sur le disque...</translation>
     </message>
     <message>
-        <source>Send coins to a Alphacon address</source>
+        <source>Send coins to an Alphacon address</source>
         <translation>Envoyer des pièces à une adresse Alphacon</translation>
     </message>
     <message>
@@ -872,7 +872,7 @@
         <translation>Montant</translation>
     </message>
     <message>
-        <source>Enter a Alphacon address (e.g. %1)</source>
+        <source>Enter an Alphacon address (e.g. %1)</source>
         <translation>Entrer une adresse Alphacon (e.g. %1)</translation>
     </message>
     <message>
