@@ -193,7 +193,6 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
                 } catch (scriptnum_error&) {
                     break;
                 }
-
             }
             else if (opcode1 != opcode2 || vch1 != vch2)
             {

@@ -376,6 +376,7 @@ bool CBlockTreeDB::ReadAddressIndex(uint160 addressHash, int type, std::string t
             if (end > 0 && key.second.blockHeight > end) {
                 break;
             }
+
             CAmount nValue;
             if (pcursor->GetValue(nValue)) {
                 addressIndex.push_back(std::make_pair(key.second, nValue));

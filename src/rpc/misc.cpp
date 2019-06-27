@@ -1115,18 +1115,23 @@ UniValue getaddressbalance(const JSONRPCRequest& request)
 
         //tokenName -> (received, balance)
         std::map<std::string, std::pair<CAmount, CAmount>> balances;
+        CAmount locked = 0;
 
         for (std::vector<std::pair<CAddressIndexKey, CAmount> >::const_iterator it = addressIndex.begin();
-             it != addressIndex.end(); it++) {
-            std::string tokenName = it->first.token;
-            if (balances.count(tokenName) == 0) {
-                balances[tokenName] = std::make_pair(0, 0);
+            it != addressIndex.end(); it++) {
+                std::string tokenName = it->first.token;
+                if (balances.count(tokenName) == 0) {
+                    balances[tokenName] = std::make_pair(0, 0);
+                }
+                if (it->second > 0) {
+                    balances[tokenName].first += it->second;
+                }
+                if ((int)chainActive.Height() > it->first.timeLock) {
+                    balances[tokenName].second += it->second;
+                } else {
+                    locked += it->second;
+                }
             }
-            if (it->second > 0) {
-                balances[tokenName].first += it->second;
-            }
-            balances[tokenName].second += it->second;
-        }
 
         UniValue result(UniValue::VARR);
 
@@ -1136,6 +1141,7 @@ UniValue getaddressbalance(const JSONRPCRequest& request)
             balance.push_back(Pair("tokenName", it->first));
             balance.push_back(Pair("balance", it->second.second));
             balance.push_back(Pair("received", it->second.first));
+            balance.push_back(Pair("locked", locked));
             result.push_back(balance);
         }
 
@@ -1152,18 +1158,24 @@ UniValue getaddressbalance(const JSONRPCRequest& request)
 
         CAmount balance = 0;
         CAmount received = 0;
+        CAmount locked = 0;
 
         for (std::vector<std::pair<CAddressIndexKey, CAmount> >::const_iterator it = addressIndex.begin();
              it != addressIndex.end(); it++) {
             if (it->second > 0) {
                 received += it->second;
             }
-            balance += it->second;
+            if ((int)chainActive.Height() > it->first.timeLock) {
+                balance += it->second;
+            } else {
+                locked += it->second;
+            }
         }
 
         UniValue result(UniValue::VOBJ);
         result.push_back(Pair("balance", balance));
         result.push_back(Pair("received", received));
+        result.push_back(Pair("locked", locked));
 
         return result;
     }

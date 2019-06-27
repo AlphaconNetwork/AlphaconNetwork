@@ -141,6 +141,30 @@ std::string ScriptToAsmStr(const CScript& script, const bool fAttemptSighashDeco
     return str;
 }
 
+std::vector<std::string> ScriptToAsmVector(const CScript& script, const bool fAttemptSighashDecode)
+{
+    std::vector<std::string> result;
+    opcodetype opcode;
+    std::vector<unsigned char> vch;
+    CScript::const_iterator pc = script.begin();
+    while (pc < script.end()) {
+        if (!script.GetOp(pc, opcode, vch)) {
+            result.push_back("[error]");
+            return result;
+        }
+        if (0 <= opcode && opcode <= OP_PUSHDATA4) {
+            if (vch.size() <= static_cast<std::vector<unsigned char>::size_type>(4)) {
+                result.push_back(strprintf("%d", CScriptNum(vch, false).getint()));
+            } else {
+                result.push_back(HexStr(vch));
+            }
+        } else {
+            result.push_back(GetOpName(opcode));
+        }
+    }
+    return result;
+}
+
 std::string EncodeHexTx(const CTransaction& tx, const int serializeFlags)
 {
     CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION | serializeFlags);
