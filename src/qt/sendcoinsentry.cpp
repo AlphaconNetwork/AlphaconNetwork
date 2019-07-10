@@ -188,6 +188,11 @@ bool SendCoinsEntry::validate()
         if (!re.exactMatch(ui->coinLockTime->text())) {
             ui->coinLockTime->setValid(false);
             retval = false;
+        } else {
+            if (ui->coinLockTime->text().toInt() <= 255) {
+                ui->coinLockTime->setValid(false);
+                retval = false;
+            }
         }
     }
 

@@ -474,8 +474,8 @@ UniValue sendtoaddress(const JSONRPCRequest& request)
     int lockTime = 0;
     if (!request.params[2].isNull()) {
         lockTime = request.params[2].get_int();
-        if (lockTime < 0) {
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "lock time must be greater or equal to 0.");
+        if (lockTime <= 255) {
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "lock time must be greater than 255.");
         }
     }
 

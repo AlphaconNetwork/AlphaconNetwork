@@ -726,11 +726,11 @@
         <translation>토큰명:</translation>
     </message>
     <message>
-        <source>Pay To:</source>
-        <translation>전송주소:</translation>
+        <source>Pay &amp;To:</source>
+        <translation>송금할 대상:</translation>
     </message>
     <message>
-        <source>Label:</source>
+        <source>&amp;Label:</source>
         <translation>라벨:</translation>
     </message>
     <message>
@@ -2419,6 +2419,10 @@
     <message>
         <source>Enter height or timestamp lock time for transaction (default = 0)</source>
         <translation>지정한 기간 이후에 전송이 되도록 합니다. 단위:분</translation>
+    </message>
+    <message>
+        <source>Lock time:</source>
+        <translation>락업시간(분):</translation>
     </message>
 </context>
 <context>
