@@ -66,6 +66,8 @@
 #define NOMINMAX
 #endif
 
+#include <codecvt>
+
 #include <io.h> /* for _commit */
 #include <shlobj.h>
 #endif
