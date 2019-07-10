@@ -42,7 +42,7 @@ QString AlphaconUnits::name(int unit)
 {
     switch(unit)
     {
-    case ALP: return QString("ALP");
+    case ALP: return QString("ALP ");
     case mALP: return QString("mALP");
     case uALP: return QString::fromUtf8("μALP");
     default: return QString("???");

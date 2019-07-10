@@ -10,6 +10,7 @@
 #include "guiconstants.h"
 #include "qvaluecombobox.h"
 #include "platformstyle.h"
+#include "util.h"
 
 #include <QDebug>
 #include <QApplication>
@@ -17,6 +18,7 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QLabel>
 
 /** QSpinBox that uses fixed-point numbers internally and uses our own
  * formatting/parsing functions.
@@ -233,7 +235,13 @@ AlphaconAmountField::AlphaconAmountField(QWidget *parent) :
     layout->addWidget(amount);
     unit = new QValueComboBox();
     unit->setModel(new AlphaconUnits(this));
-    layout->addWidget(unit);
+
+    if (gArgs.GetBoolArg("-advancedui", false)) {
+        layout->addWidget(unit);
+    } else {
+        layout->addWidget(new QLabel(tr("ALP")));
+    }
+
     layout->addStretch(1);
     layout->setContentsMargins(0,0,0,0);
 
