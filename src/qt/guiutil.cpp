@@ -66,6 +66,10 @@
 #include <QFontDatabase>
 #endif
 
+#ifdef WIN32
+static fs::detail::utf8_codecvt_facet utf8;
+#endif
+
 #if defined(Q_OS_MAC)
 extern double NSAppKitVersionNumber;
 #if !defined(NSAppKitVersionNumber10_8)
@@ -936,12 +940,20 @@ void setClipboard(const QString& str)
 
 fs::path qstringToBoostPath(const QString &path)
 {
+#ifdef WIN32
+    return fs::path(path.toStdString(), utf8);
+#else
     return fs::path(path.toStdString());
+#endif
 }
 
 QString boostPathToQString(const fs::path &path)
 {
+#ifdef WIN32
+    return QString::fromStdString(path.string(utf8));
+#else
     return QString::fromStdString(path.string());
+#endif
 }
 
 QString formatDurationStr(int secs)
