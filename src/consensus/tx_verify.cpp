@@ -216,7 +216,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, CTokensCa
                         return state.DoS(100, false, REJECT_INVALID, "bad-txns-transfer-token-bad-deserialize");
 
                     // Check token name validity and get type
-                    TokenType tokenType;
+                    KnownTokenType tokenType;
                     if (!IsTokenNameValid(transfer.strName, tokenType)) {
                         return state.DoS(100, false, REJECT_INVALID, "bad-txns-transfer-token-name-invalid");
                     }
@@ -228,12 +228,12 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, CTokensCa
                     }
 
                     // If the transfer is a unique token. Check to make sure that it is UNIQUE_TOKEN_AMOUNT
-                    if (tokenType == TokenType::UNIQUE) {
+                    if (tokenType == KnownTokenType::UNIQUE) {
                         if (transfer.nAmount != UNIQUE_TOKEN_AMOUNT)
                             return state.DoS(100, false, REJECT_INVALID, "bad-txns-transfer-unique-amount-was-not-1");
                     }
 
-                    if (tokenType == TokenType::MSGCHANNEL || tokenType == TokenType::VOTE) {
+                    if (tokenType == KnownTokenType::MSGCHANNEL || tokenType == KnownTokenType::VOTE) {
                         return state.DoS(100, false, REJECT_INVALID, "disabled-token-type");
                     }
 

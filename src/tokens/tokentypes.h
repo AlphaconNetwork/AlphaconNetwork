@@ -19,7 +19,7 @@
 
 class CTokensCache;
 
-enum class TokenType
+enum class KnownTokenType
 {
     ROOT = 0,
     SUB = 1,
@@ -31,8 +31,8 @@ enum class TokenType
     INVALID = 7
 };
 
-int IntFromTokenType(TokenType type);
-TokenType TokenTypeFromInt(int nType);
+int IntFromTokenType(KnownTokenType type);
+KnownTokenType TokenTypeFromInt(int nType);
 
 const char IPFS_SHA2_256 = 0x12;
 const char IPFS_SHA2_256_LEN = 0x20;

@@ -28,14 +28,14 @@ BOOST_FIXTURE_TEST_SUITE(token_tests, BasicTestingSetup)
     {
         BOOST_TEST_MESSAGE("Running Name Validation Test");
 
-        TokenType type;
+        KnownTokenType type;
 
         // regular
         BOOST_CHECK(IsTokenNameValid("MIN", type));
-        BOOST_CHECK(type == TokenType::ROOT);
+        BOOST_CHECK(type == KnownTokenType::ROOT);
         BOOST_CHECK(IsTokenNameValid("MAX_TOKEN_IS_30_CHARACTERS_LNG", type));
         BOOST_CHECK(!IsTokenNameValid("MAX_TOKEN_IS_31_CHARACTERS_LONG", type));
-        BOOST_CHECK(type == TokenType::INVALID);
+        BOOST_CHECK(type == KnownTokenType::INVALID);
         BOOST_CHECK(IsTokenNameValid("A_BCDEFGHIJKLMNOPQRSTUVWXY.Z", type));
         BOOST_CHECK(IsTokenNameValid("0_12345678.9", type));
 
@@ -71,7 +71,7 @@ BOOST_FIXTURE_TEST_SUITE(token_tests, BasicTestingSetup)
 
         // subs
         BOOST_CHECK(IsTokenNameValid("ABC/A", type));
-        BOOST_CHECK(type == TokenType::SUB);
+        BOOST_CHECK(type == KnownTokenType::SUB);
         BOOST_CHECK(IsTokenNameValid("ABC/A/1", type));
         BOOST_CHECK(IsTokenNameValid("ABC/A_1/1.A", type));
         BOOST_CHECK(IsTokenNameValid("ABC/AB/XYZ/STILL/MAX/30/123456", type));
@@ -94,7 +94,7 @@ BOOST_FIXTURE_TEST_SUITE(token_tests, BasicTestingSetup)
 
         // unique
         BOOST_CHECK(IsTokenNameValid("ABC#AZaz09", type));
-        BOOST_CHECK(type == TokenType::UNIQUE);
+        BOOST_CHECK(type == KnownTokenType::UNIQUE);
         BOOST_CHECK(IsTokenNameValid("ABC#abc123ABC@$%&*()[]{}-_.?:", type));
         BOOST_CHECK(!IsTokenNameValid("ABC#no!bangs", type));
         BOOST_CHECK(IsTokenNameValid("ABC/THING#_STILL_31_MAX-------_", type));
@@ -108,11 +108,11 @@ BOOST_FIXTURE_TEST_SUITE(token_tests, BasicTestingSetup)
 
         // channel
         BOOST_CHECK(IsTokenNameValid("ABC~1", type));
-        BOOST_CHECK(type == TokenType::MSGCHANNEL);
+        BOOST_CHECK(type == KnownTokenType::MSGCHANNEL);
         BOOST_CHECK(IsTokenNameValid("ABC~MAX_OF_12_CR", type));
         BOOST_CHECK(!IsTokenNameValid("ABC~MAX_OF_12_CHR", type));
         BOOST_CHECK(IsTokenNameValid("TEST/TEST~CHANNEL", type));
-        BOOST_CHECK(type == TokenType::MSGCHANNEL);
+        BOOST_CHECK(type == KnownTokenType::MSGCHANNEL);
 
         BOOST_CHECK(!IsTokenNameValid("MIN~", type));
         BOOST_CHECK(!IsTokenNameValid("ABC~NO~TILDE", type));
@@ -135,7 +135,7 @@ BOOST_FIXTURE_TEST_SUITE(token_tests, BasicTestingSetup)
         BOOST_CHECK(IsTokenNameAnOwner("ABC/A!"));
         BOOST_CHECK(IsTokenNameAnOwner("ABC/A/1!"));
         BOOST_CHECK(IsTokenNameValid("ABC!", type));
-        BOOST_CHECK(type == TokenType::OWNER);
+        BOOST_CHECK(type == KnownTokenType::OWNER);
 
         // vote
         BOOST_CHECK(IsTokenNameValid("ABC^VOTE"));
@@ -148,17 +148,17 @@ BOOST_FIXTURE_TEST_SUITE(token_tests, BasicTestingSetup)
         BOOST_CHECK(IsTokenNameValid("ABC/SUB/SUB/SUB/SUB/SUB/31^VOTE"));
         BOOST_CHECK(!IsTokenNameValid("ABC/SUB/SUB/SUB/SUB/SUB/32X^VOTE"));
         BOOST_CHECK(IsTokenNameValid("ABC/SUB/SUB^VOTE", type));
-        BOOST_CHECK(type == TokenType::VOTE);
+        BOOST_CHECK(type == KnownTokenType::VOTE);
 
         // Check type for different type of sub tokens
         BOOST_CHECK(IsTokenNameValid("TEST/UYTH#UNIQUE", type));
-        BOOST_CHECK(type == TokenType::UNIQUE);
+        BOOST_CHECK(type == KnownTokenType::UNIQUE);
 
         BOOST_CHECK(IsTokenNameValid("TEST/UYTH/SUB#UNIQUE", type));
-        BOOST_CHECK(type == TokenType::UNIQUE);
+        BOOST_CHECK(type == KnownTokenType::UNIQUE);
 
         BOOST_CHECK(IsTokenNameValid("TEST/UYTH/SUB~CHANNEL", type));
-        BOOST_CHECK(type == TokenType::MSGCHANNEL);
+        BOOST_CHECK(type == KnownTokenType::MSGCHANNEL);
 
         BOOST_CHECK(!IsTokenNameValid("TEST/UYTH/SUB#UNIQUE^VOTE", type));
         BOOST_CHECK(!IsTokenNameValid("TEST/UYTH/SUB#UNIQUE#UNIQUE", type));

@@ -123,44 +123,44 @@ bool IsTokenNameASubtoken(const std::string& name)
     return parts.size() > 1;
 }
 
-bool IsTokenNameValid(const std::string& name, TokenType& tokenType, std::string& error)
+bool IsTokenNameValid(const std::string& name, KnownTokenType& tokenType, std::string& error)
 {
-    tokenType = TokenType::INVALID;
+    tokenType = KnownTokenType::INVALID;
     if (std::regex_match(name, UNIQUE_INDICATOR))
     {
-        bool ret = IsTypeCheckNameValid(TokenType::UNIQUE, name, error);
+        bool ret = IsTypeCheckNameValid(KnownTokenType::UNIQUE, name, error);
         if (ret)
-            tokenType = TokenType::UNIQUE;
+            tokenType = KnownTokenType::UNIQUE;
 
         return ret;
     }
     else if (std::regex_match(name, CHANNEL_INDICATOR))
     {
-        bool ret = IsTypeCheckNameValid(TokenType::MSGCHANNEL, name, error);
+        bool ret = IsTypeCheckNameValid(KnownTokenType::MSGCHANNEL, name, error);
         if (ret)
-            tokenType = TokenType::MSGCHANNEL;
+            tokenType = KnownTokenType::MSGCHANNEL;
 
         return ret;
     }
     else if (std::regex_match(name, OWNER_INDICATOR))
     {
-        bool ret = IsTypeCheckNameValid(TokenType::OWNER, name, error);
+        bool ret = IsTypeCheckNameValid(KnownTokenType::OWNER, name, error);
         if (ret)
-            tokenType = TokenType::OWNER;
+            tokenType = KnownTokenType::OWNER;
 
         return ret;
     }
     else if (std::regex_match(name, VOTE_INDICATOR))
     {
-        bool ret = IsTypeCheckNameValid(TokenType::VOTE, name, error);
+        bool ret = IsTypeCheckNameValid(KnownTokenType::VOTE, name, error);
         if (ret)
-            tokenType = TokenType::VOTE;
+            tokenType = KnownTokenType::VOTE;
 
         return ret;
     }
     else
     {
-        auto type = IsTokenNameASubtoken(name) ? TokenType::SUB : TokenType::ROOT;
+        auto type = IsTokenNameASubtoken(name) ? KnownTokenType::SUB : KnownTokenType::ROOT;
         bool ret = IsTypeCheckNameValid(type, name, error);
         if (ret)
             tokenType = type;
@@ -171,12 +171,12 @@ bool IsTokenNameValid(const std::string& name, TokenType& tokenType, std::string
 
 bool IsTokenNameValid(const std::string& name)
 {
-    TokenType _tokenType;
+    KnownTokenType _tokenType;
     std::string _error;
     return IsTokenNameValid(name, _tokenType, _error);
 }
 
-bool IsTokenNameValid(const std::string& name, TokenType& tokenType)
+bool IsTokenNameValid(const std::string& name, KnownTokenType& tokenType)
 {
     std::string _error;
     return IsTokenNameValid(name, tokenType, _error);
@@ -188,16 +188,16 @@ bool IsTokenNameAnOwner(const std::string& name)
 }
 
 // TODO get the string translated below
-bool IsTypeCheckNameValid(const TokenType type, const std::string& name, std::string& error)
+bool IsTypeCheckNameValid(const KnownTokenType type, const std::string& name, std::string& error)
 {
-    if (type == TokenType::UNIQUE) {
+    if (type == KnownTokenType::UNIQUE) {
         if (name.size() > MAX_NAME_LENGTH) { error = "Name is greater than max length of " + std::to_string(MAX_NAME_LENGTH); return false; }
         std::vector<std::string> parts;
         boost::split(parts, name, boost::is_any_of(UNIQUE_TAG_DELIMITER));
         bool valid = IsNameValidBeforeTag(parts.front()) && IsUniqueTagValid(parts.back());
         if (!valid) { error = "Unique name contains invalid characters (Valid characters are: A-Z a-z 0-9 @ $ % & * ( ) [ ] { } _ . ? : -)";  return false; }
         return true;
-    } else if (type == TokenType::MSGCHANNEL) {
+    } else if (type == KnownTokenType::MSGCHANNEL) {
         if (name.size() > MAX_NAME_LENGTH) { error = "Name is greater than max length of " + std::to_string(MAX_NAME_LENGTH); return false; }
         std::vector<std::string> parts;
         boost::split(parts, name, boost::is_any_of(CHANNEL_TAG_DELIMITER));
@@ -205,12 +205,12 @@ bool IsTypeCheckNameValid(const TokenType type, const std::string& name, std::st
         if (parts.back().size() > MAX_CHANNEL_NAME_LENGTH) { error = "Channel name is greater than max length of " + std::to_string(MAX_CHANNEL_NAME_LENGTH); return false; }
         if (!valid) { error = "Message Channel name contains invalid characters (Valid characters are: A-Z 0-9 _ .) (special characters can't be the first or last characters)";  return false; }
         return true;
-    } else if (type == TokenType::OWNER) {
+    } else if (type == KnownTokenType::OWNER) {
         if (name.size() > MAX_NAME_LENGTH) { error = "Name is greater than max length of " + std::to_string(MAX_NAME_LENGTH); return false; }
         bool valid = IsNameValidBeforeTag(name.substr(0, name.size() - 1));
         if (!valid) { error = "Owner name contains invalid characters (Valid characters are: A-Z 0-9 _ .) (special characters can't be the first or last characters)";  return false; }
         return true;
-    } else if (type == TokenType::VOTE) {
+    } else if (type == KnownTokenType::VOTE) {
         if (name.size() > MAX_NAME_LENGTH) { error = "Name is greater than max length of " + std::to_string(MAX_NAME_LENGTH); return false; }
         std::vector<std::string> parts;
         boost::split(parts, name, boost::is_any_of(VOTE_TAG_DELIMITER));
@@ -229,20 +229,20 @@ bool IsTypeCheckNameValid(const TokenType type, const std::string& name, std::st
 
 std::string GetParentName(const std::string& name)
 {
-    TokenType type;
+    KnownTokenType type;
     if (!IsTokenNameValid(name, type))
         return "";
 
     auto index = std::string::npos;
-    if (type == TokenType::SUB) {
+    if (type == KnownTokenType::SUB) {
         index = name.find_last_of(SUB_NAME_DELIMITER);
-    } else if (type == TokenType::UNIQUE) {
+    } else if (type == KnownTokenType::UNIQUE) {
         index = name.find_last_of(UNIQUE_TAG_DELIMITER);
-    } else if (type == TokenType::MSGCHANNEL) {
+    } else if (type == KnownTokenType::MSGCHANNEL) {
         index = name.find_last_of(CHANNEL_TAG_DELIMITER);
-    } else if (type == TokenType::VOTE) {
+    } else if (type == KnownTokenType::VOTE) {
         index = name.find_last_of(VOTE_TAG_DELIMITER);
-    } else if (type == TokenType::ROOT)
+    } else if (type == KnownTokenType::ROOT)
         return name;
 
     if (std::string::npos != index)
@@ -288,13 +288,13 @@ bool CNewToken::IsValid(std::string& strError, CTokensCache& tokenCache, bool fC
         }
     }
 
-    TokenType tokenType;
+    KnownTokenType tokenType;
     if (!IsTokenNameValid(std::string(strName), tokenType)) {
         strError = _("Invalid parameter: token_name must only consist of valid characters and have a size between 3 and 30 characters. See help for more details.");
         return false;
     }
 
-    if (tokenType == TokenType::UNIQUE) {
+    if (tokenType == KnownTokenType::UNIQUE) {
         if (units != UNIQUE_TOKEN_UNITS) {
             strError = _("Invalid parameter: units must be ") + std::to_string(UNIQUE_TOKEN_UNITS / COIN);
             return false;
@@ -679,7 +679,7 @@ bool CTransaction::VerifyNewToken(std::string& strError) const
         return error("%s : Failed to get new token from transaction: %s", __func__, this->GetHash().GetHex());
     }
 
-    TokenType tokenType;
+    KnownTokenType tokenType;
     IsTokenNameValid(token.strName, tokenType);
 
     std::string strOwnerName;
@@ -784,7 +784,7 @@ bool CTransaction::VerifyNewUniqueToken(std::string& strError) const
     // check for burn outpoint (must account for each new token)
     bool fBurnOutpointFound = false;
     for (auto out : vout) {
-        if (CheckIssueBurnTx(out, TokenType::UNIQUE, tokenOutpointCount)) {
+        if (CheckIssueBurnTx(out, KnownTokenType::UNIQUE, tokenOutpointCount)) {
             fBurnOutpointFound = true;
             break;
         }
@@ -1931,18 +1931,18 @@ bool IsTokenUnitsValid(const CAmount& units)
     return false;
 }
 
-bool CheckIssueBurnTx(const CTxOut& txOut, const TokenType& type, const int numberIssued)
+bool CheckIssueBurnTx(const CTxOut& txOut, const KnownTokenType& type, const int numberIssued)
 {
     CAmount burnAmount = 0;
     std::string burnAddress = "";
 
-    if (type == TokenType::SUB) {
+    if (type == KnownTokenType::SUB) {
         burnAmount = GetIssueSubTokenBurnAmount();
         burnAddress = Params().IssueSubTokenBurnAddress();
-    } else if (type == TokenType::ROOT) {
+    } else if (type == KnownTokenType::ROOT) {
         burnAmount = GetIssueTokenBurnAmount();
         burnAddress = Params().IssueTokenBurnAddress();
-    } else if (type == TokenType::UNIQUE) {
+    } else if (type == KnownTokenType::UNIQUE) {
         burnAmount = GetIssueUniqueTokenBurnAmount();
         burnAddress = Params().IssueUniqueTokenBurnAddress();
     } else {
@@ -1973,7 +1973,7 @@ bool CheckIssueBurnTx(const CTxOut& txOut, const TokenType& type, const int numb
     return true;
 }
 
-bool CheckIssueBurnTx(const CTxOut& txOut, const TokenType& type)
+bool CheckIssueBurnTx(const CTxOut& txOut, const KnownTokenType& type)
 {
     return CheckIssueBurnTx(txOut, type, 1);
 }
@@ -2067,11 +2067,11 @@ bool IsScriptNewUniqueToken(const CScript& scriptPubKey, int& nStartingIndex)
     if (!TokenFromScript(scriptPubKey, token, address))
         return false;
 
-    TokenType tokenType;
+    KnownTokenType tokenType;
     if (!IsTokenNameValid(token.strName, tokenType))
         return false;
 
-    return TokenType::UNIQUE == tokenType;
+    return KnownTokenType::UNIQUE == tokenType;
 }
 
 bool IsScriptOwnerToken(const CScript& scriptPubKey)
@@ -2401,25 +2401,25 @@ CAmount GetIssueUniqueTokenBurnAmount()
 
 CAmount GetBurnAmount(const int nType)
 {
-    return GetBurnAmount((TokenType(nType)));
+    return GetBurnAmount((KnownTokenType(nType)));
 }
 
-CAmount GetBurnAmount(const TokenType type)
+CAmount GetBurnAmount(const KnownTokenType type)
 {
     switch (type) {
-        case TokenType::ROOT:
+        case KnownTokenType::ROOT:
             return GetIssueTokenBurnAmount();
-        case TokenType::SUB:
+        case KnownTokenType::SUB:
             return GetIssueSubTokenBurnAmount();
-        case TokenType::MSGCHANNEL:
+        case KnownTokenType::MSGCHANNEL:
             return 0;
-        case TokenType::OWNER:
+        case KnownTokenType::OWNER:
             return 0;
-        case TokenType::UNIQUE:
+        case KnownTokenType::UNIQUE:
             return GetIssueUniqueTokenBurnAmount();
-        case TokenType::VOTE:
+        case KnownTokenType::VOTE:
             return 0;
-        case TokenType::REISSUE:
+        case KnownTokenType::REISSUE:
             return GetReissueTokenBurnAmount();
         default:
             return 0;
@@ -2428,25 +2428,25 @@ CAmount GetBurnAmount(const TokenType type)
 
 std::string GetBurnAddress(const int nType)
 {
-    return GetBurnAddress((TokenType(nType)));
+    return GetBurnAddress((KnownTokenType(nType)));
 }
 
-std::string GetBurnAddress(const TokenType type)
+std::string GetBurnAddress(const KnownTokenType type)
 {
     switch (type) {
-        case TokenType::ROOT:
+        case KnownTokenType::ROOT:
             return Params().IssueTokenBurnAddress();
-        case TokenType::SUB:
+        case KnownTokenType::SUB:
             return Params().IssueSubTokenBurnAddress();
-        case TokenType::MSGCHANNEL:
+        case KnownTokenType::MSGCHANNEL:
             return "";
-        case TokenType::OWNER:
+        case KnownTokenType::OWNER:
             return "";
-        case TokenType::UNIQUE:
+        case KnownTokenType::UNIQUE:
             return Params().IssueUniqueTokenBurnAddress();
-        case TokenType::VOTE:
+        case KnownTokenType::VOTE:
             return "";
-        case TokenType::REISSUE:
+        case KnownTokenType::REISSUE:
             return Params().ReissueTokenBurnAddress();
         default:
             return "";
@@ -2590,14 +2590,14 @@ bool CreateTokenTransaction(CWallet* pwallet, CCoinControl& coinControl, const s
         coinControl.destChange = DecodeDestination(change_address);
     }
 
-    TokenType tokenType;
+    KnownTokenType tokenType;
     std::string parentName;
     for (auto token : tokens) {
         if (!IsTokenNameValid(token.strName, tokenType)) {
             error = std::make_pair(RPC_INVALID_PARAMETER, "Token name not valid");
             return false;
         }
-        if (tokens.size() > 1 && tokenType != TokenType::UNIQUE) {
+        if (tokens.size() > 1 && tokenType != KnownTokenType::UNIQUE) {
             error = std::make_pair(RPC_INVALID_PARAMETER, "Only unique tokens can be issued in bulk.");
             return false;
         }
@@ -2639,7 +2639,7 @@ bool CreateTokenTransaction(CWallet* pwallet, CCoinControl& coinControl, const s
     vecSend.push_back(recipient);
 
     // If the token is a subtoken or unique token. We need to send the ownertoken change back to ourselfs
-    if (tokenType == TokenType::SUB || tokenType == TokenType::UNIQUE) {
+    if (tokenType == KnownTokenType::SUB || tokenType == KnownTokenType::UNIQUE) {
         // Get the script for the destination address for the tokens
         CScript scriptTransferOwnerToken = GetScriptForDestination(DecodeDestination(change_address));
 
@@ -2650,7 +2650,7 @@ bool CreateTokenTransaction(CWallet* pwallet, CCoinControl& coinControl, const s
     }
 
     // Get the owner outpoints if this is a subtoken or unique token
-    if (tokenType == TokenType::SUB || tokenType == TokenType::UNIQUE) {
+    if (tokenType == KnownTokenType::SUB || tokenType == KnownTokenType::UNIQUE) {
         // Verify that this wallet is the owner for the token, and get the owner token outpoint
         for (auto token : tokens) {
             if (!VerifyWalletHasToken(parentName + OWNER_TAG, error)) {

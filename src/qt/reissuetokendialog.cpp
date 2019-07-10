@@ -1050,7 +1050,7 @@ void ReissueTokenDialog::coinControlUpdateLabels()
     CoinControlDialog::payAmounts.clear();
     CoinControlDialog::fSubtractFeeFromAmount = false;
 
-    CoinControlDialog::payAmounts.append(GetBurnAmount(TokenType::REISSUE));
+    CoinControlDialog::payAmounts.append(GetBurnAmount(KnownTokenType::REISSUE));
 
     if (CoinControlDialog::coinControl->HasSelected())
     {

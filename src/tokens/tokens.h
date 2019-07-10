@@ -247,22 +247,22 @@ CAmount GetIssueTokenBurnAmount();
 CAmount GetReissueTokenBurnAmount();
 CAmount GetIssueSubTokenBurnAmount();
 CAmount GetIssueUniqueTokenBurnAmount();
-CAmount GetBurnAmount(const TokenType type);
+CAmount GetBurnAmount(const KnownTokenType type);
 CAmount GetBurnAmount(const int nType);
-std::string GetBurnAddress(const TokenType type);
+std::string GetBurnAddress(const KnownTokenType type);
 std::string GetBurnAddress(const int nType);
 
 void GetTxOutTokenTypes(const std::vector<CTxOut>& vout, int& issues, int& reissues, int& transfers, int& owners);
 
 bool IsTokenNameValid(const std::string& name);
-bool IsTokenNameValid(const std::string& name, TokenType& tokenType);
-bool IsTokenNameValid(const std::string& name, TokenType& tokenType, std::string& error);
+bool IsTokenNameValid(const std::string& name, KnownTokenType& tokenType);
+bool IsTokenNameValid(const std::string& name, KnownTokenType& tokenType, std::string& error);
 bool IsUniqueTagValid(const std::string& tag);
 bool IsTokenNameAnOwner(const std::string& name);
 std::string GetParentName(const std::string& name); // Gets the parent name of a subtoken TEST/TESTSUB would return TEST
 std::string GetUniqueTokenName(const std::string& parent, const std::string& tag);
 
-bool IsTypeCheckNameValid(const TokenType type, const std::string& name, std::string& error);
+bool IsTypeCheckNameValid(const KnownTokenType type, const std::string& name, std::string& error);
 
 bool IsTokenUnitsValid(const CAmount& units);
 
@@ -276,8 +276,8 @@ bool TokenFromScript(const CScript& scriptPubKey, CNewToken& token, std::string&
 bool OwnerTokenFromScript(const CScript& scriptPubKey, std::string& tokenName, std::string& strAddress);
 bool ReissueTokenFromScript(const CScript& scriptPubKey, CReissueToken& reissue, std::string& strAddress);
 
-bool CheckIssueBurnTx(const CTxOut& txOut, const TokenType& type, const int numberIssued);
-bool CheckIssueBurnTx(const CTxOut& txOut, const TokenType& type);
+bool CheckIssueBurnTx(const CTxOut& txOut, const KnownTokenType& type, const int numberIssued);
+bool CheckIssueBurnTx(const CTxOut& txOut, const KnownTokenType& type);
 bool CheckReissueBurnTx(const CTxOut& txOut);
 
 bool CheckIssueDataTx(const CTxOut& txOut);

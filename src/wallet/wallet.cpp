@@ -3529,7 +3529,7 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, int& nC
 }
 
 bool CWallet::CreateTransactionWithTokens(const std::vector<CRecipient>& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet, int& nChangePosInOut,
-                               std::string& strFailReason, const CCoinControl& coin_control, const std::vector<CNewToken> tokens, const CTxDestination destination, const TokenType& type, bool sign)
+                               std::string& strFailReason, const CCoinControl& coin_control, const std::vector<CNewToken> tokens, const CTxDestination destination, const KnownTokenType& type, bool sign)
 {
     CReissueToken reissueToken;
     return CreateTransactionAll(vecSend, wtxNew, reservekey, nFeeRet, nChangePosInOut, strFailReason, coin_control, true, tokens, destination, false, false, reissueToken, type, sign);
@@ -3541,7 +3541,7 @@ bool CWallet::CreateTransactionWithTransferToken(const std::vector<CRecipient>& 
     CNewToken token;
     CReissueToken reissueToken;
     CTxDestination destination;
-    TokenType tokenType = TokenType::INVALID;
+    KnownTokenType tokenType = KnownTokenType::INVALID;
     return CreateTransactionAll(vecSend, wtxNew, reservekey, nFeeRet, nChangePosInOut, strFailReason, coin_control, false, token, destination, true, false, reissueToken, tokenType, sign);
 }
 
@@ -3549,7 +3549,7 @@ bool CWallet::CreateTransactionWithReissueToken(const std::vector<CRecipient>& v
                                          std::string& strFailReason, const CCoinControl& coin_control, const CReissueToken& reissueToken, const CTxDestination destination, bool sign)
 {
     CNewToken token;
-    TokenType tokenType = TokenType::REISSUE;
+    KnownTokenType tokenType = KnownTokenType::REISSUE;
     return CreateTransactionAll(vecSend, wtxNew, reservekey, nFeeRet, nChangePosInOut, strFailReason, coin_control, false, token, destination, false, true, reissueToken, tokenType, sign);
 }
 
@@ -3560,7 +3560,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
     CNewToken token;
     CReissueToken reissueToken;
     CTxDestination destination;
-    TokenType tokenType = TokenType::INVALID;
+    KnownTokenType tokenType = KnownTokenType::INVALID;
     return CreateTransactionAll(vecSend, wtxNew, reservekey, nFeeRet, nChangePosInOut, strFailReason, coin_control, false,  token, destination, false, false, reissueToken, tokenType, sign);
 }
 
@@ -3568,7 +3568,7 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
                                    CAmount& nFeeRet, int& nChangePosInOut, std::string& strFailReason,
                                    const CCoinControl& coin_control, bool fNewToken, const CNewToken& token,
                                    const CTxDestination destination, bool fTransferToken, bool fReissueToken,
-                                   const CReissueToken& reissueToken, const TokenType& tokenType, bool sign)
+                                   const CReissueToken& reissueToken, const KnownTokenType& tokenType, bool sign)
 {
     std::vector<CNewToken> tokens;
     tokens.push_back(token);
@@ -3582,7 +3582,7 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
                                    const CCoinControl& coin_control, bool fNewToken,
                                    const std::vector<CNewToken> tokens, const CTxDestination destination,
                                    bool fTransferToken, bool fReissueToken, const CReissueToken& reissueToken,
-                                   const TokenType& tokenType, bool sign)
+                                   const KnownTokenType& tokenType, bool sign)
 {
 
     /** TOKENS START */
@@ -3606,7 +3606,7 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
     for (const auto& recipient : vecSend)
     {
         /** TOKENS START */
-        if (fTransferToken || fReissueToken || tokenType == TokenType::SUB || tokenType == TokenType::UNIQUE) {
+        if (fTransferToken || fReissueToken || tokenType == KnownTokenType::SUB || tokenType == KnownTokenType::UNIQUE) {
             CTokenTransfer tokenTransfer;
             std::string address;
             if (TransferTokenFromScript(recipient.scriptPubKey, tokenTransfer, address)) {
@@ -3687,7 +3687,7 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
             /** TOKENS START */
             std::vector<COutput> vAvailableCoins;
             std::map<std::string, std::vector<COutput> > mapTokenCoins;
-            if (fTransferToken || fReissueToken || tokenType == TokenType::SUB || tokenType == TokenType::UNIQUE)
+            if (fTransferToken || fReissueToken || tokenType == KnownTokenType::SUB || tokenType == KnownTokenType::UNIQUE)
                 AvailableCoinsWithTokens(vAvailableCoins, mapTokenCoins, true, &coin_control);
             else
                 AvailableCoins(vAvailableCoins, true, &coin_control);
@@ -3852,7 +3852,7 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
                     if (fNewToken) {
                         for (auto token : tokens) {
                             // Create the owner token output for non-unique tokens
-                            if (tokenType != TokenType::UNIQUE) {
+                            if (tokenType != KnownTokenType::UNIQUE) {
                                 CScript ownerScript = GetScriptForDestination(destination);
                                 token.ConstructOwnerTransaction(ownerScript);
                                 CTxOut ownerTxOut(0, ownerScript);

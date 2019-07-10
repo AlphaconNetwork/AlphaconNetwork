@@ -255,11 +255,11 @@ void CreateTokenDialog::setUpValues()
 
     // Setup the token types
     QStringList list;
-    list.append(tr("Main Token") + " (" + AlphaconUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), GetBurnAmount(TokenType::ROOT)) + ")");
-    list.append(tr("Sub Token") + " (" + AlphaconUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), GetBurnAmount(TokenType::SUB)) + ")");
-    list.append(tr("Unique Token") + " (" + AlphaconUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), GetBurnAmount(TokenType::UNIQUE)) + ")");
+    list.append(tr("Main Token") + " (" + AlphaconUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), GetBurnAmount(KnownTokenType::ROOT)) + ")");
+    list.append(tr("Sub Token") + " (" + AlphaconUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), GetBurnAmount(KnownTokenType::SUB)) + ")");
+    list.append(tr("Unique Token") + " (" + AlphaconUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), GetBurnAmount(KnownTokenType::UNIQUE)) + ")");
     ui->tokenType->addItems(list);
-    type = IntFromTokenType(TokenType::ROOT);
+    type = IntFromTokenType(KnownTokenType::ROOT);
     ui->tokenTypeLabel->setText(tr("Token Type") + ":");
 
     // Setup the token list
@@ -486,7 +486,7 @@ void CreateTokenDialog::CheckFormState()
     std::string error;
     bool tokenNameValid = IsTypeCheckNameValid(TokenTypeFromInt(type), name.toStdString(), error);
 
-    if (type != IntFromTokenType(TokenType::ROOT)) {
+    if (type != IntFromTokenType(KnownTokenType::ROOT)) {
         if (ui->tokenList->currentText() == "")
         {
             ui->tokenList->lineEdit()->setStyleSheet(STYLE_INVALID);
@@ -559,7 +559,7 @@ void CreateTokenDialog::checkAvailabilityClicked()
 void CreateTokenDialog::onNameChanged(QString name)
 {
     // Update the displayed name to uppercase if the type only accepts uppercase
-    name = type == IntFromTokenType(TokenType::UNIQUE) ? name : name.toUpper();
+    name = type == IntFromTokenType(KnownTokenType::UNIQUE) ? name : name.toUpper();
     UpdateTokenNameToUpper();
 
     QString tokenName = name;
@@ -574,10 +574,10 @@ void CreateTokenDialog::onNameChanged(QString name)
         return;
     }
 
-    if (type == IntFromTokenType(TokenType::ROOT)) {
+    if (type == IntFromTokenType(KnownTokenType::ROOT)) {
         std::string error;
         auto strName = GetTokenName();
-        if (IsTypeCheckNameValid(TokenType::ROOT, strName.toStdString(), error)) {
+        if (IsTypeCheckNameValid(KnownTokenType::ROOT, strName.toStdString(), error)) {
             hideMessage();
             ui->availabilityButton->setDisabled(false);
         } else {
@@ -585,7 +585,7 @@ void CreateTokenDialog::onNameChanged(QString name)
             showMessage(tr(error.c_str()));
             ui->availabilityButton->setDisabled(true);
         }
-    } else if (type == IntFromTokenType(TokenType::SUB) || type == IntFromTokenType(TokenType::UNIQUE)) {
+    } else if (type == IntFromTokenType(KnownTokenType::SUB) || type == IntFromTokenType(KnownTokenType::UNIQUE)) {
         if (name.size() == 0) {
             hideMessage();
             ui->availabilityButton->setDisabled(true);
@@ -613,7 +613,7 @@ void CreateTokenDialog::onNameChanged(QString name)
     }
 
     // Set the tokenName
-    updatePresentedTokenName(format.arg(type == IntFromTokenType(TokenType::ROOT) ? "" : ui->tokenList->currentText(), identifier, name));
+    updatePresentedTokenName(format.arg(type == IntFromTokenType(KnownTokenType::ROOT) ? "" : ui->tokenList->currentText(), identifier, name));
 
     checkedAvailablity = false;
     disableCreateButton();
@@ -802,11 +802,11 @@ void CreateTokenDialog::onTokenTypeActivated(int index)
     type = index;
 
     // Make sure the type is only the the supported issue types
-    if(!(type == IntFromTokenType(TokenType::ROOT) || type == IntFromTokenType(TokenType::SUB) || type == IntFromTokenType(TokenType::UNIQUE)))
-        type = IntFromTokenType(TokenType::ROOT);
+    if(!(type == IntFromTokenType(KnownTokenType::ROOT) || type == IntFromTokenType(KnownTokenType::SUB) || type == IntFromTokenType(KnownTokenType::UNIQUE)))
+        type = IntFromTokenType(KnownTokenType::ROOT);
 
     // If the type is UNIQUE, set the units and amount to the correct value, and disable them.
-    if (type == IntFromTokenType(TokenType::UNIQUE))
+    if (type == IntFromTokenType(KnownTokenType::UNIQUE))
         setUniqueSelected();
     else
         clearSelected();
@@ -823,7 +823,7 @@ void CreateTokenDialog::onTokenTypeActivated(int index)
     UpdateTokenNameMaxSize();
 
     // Set tokenName
-    updatePresentedTokenName(format.arg(type == IntFromTokenType(TokenType::ROOT) ? "" : ui->tokenList->currentText(), identifier, ui->nameText->text()));
+    updatePresentedTokenName(format.arg(type == IntFromTokenType(KnownTokenType::ROOT) ? "" : ui->tokenList->currentText(), identifier, ui->nameText->text()));
 
     if (ui->nameText->text().size())
         ui->availabilityButton->setDisabled(false);
@@ -843,7 +843,7 @@ void CreateTokenDialog::onTokenListActivated(int index)
     UpdateTokenNameMaxSize();
 
     // Set tokenName
-    updatePresentedTokenName(format.arg(type == IntFromTokenType(TokenType::ROOT) ? "" : ui->tokenList->currentText(), identifier, ui->nameText->text()));
+    updatePresentedTokenName(format.arg(type == IntFromTokenType(KnownTokenType::ROOT) ? "" : ui->tokenList->currentText(), identifier, ui->nameText->text()));
 
     if (ui->nameText->text().size())
         ui->availabilityButton->setDisabled(false);
@@ -859,9 +859,9 @@ void CreateTokenDialog::updatePresentedTokenName(QString name)
 
 QString CreateTokenDialog::GetSpecialCharacter()
 {
-    if (type == IntFromTokenType(TokenType::SUB))
+    if (type == IntFromTokenType(KnownTokenType::SUB))
         return "/";
-    else if (type == IntFromTokenType(TokenType::UNIQUE))
+    else if (type == IntFromTokenType(KnownTokenType::UNIQUE))
         return "#";
 
     return "";
@@ -869,27 +869,27 @@ QString CreateTokenDialog::GetSpecialCharacter()
 
 QString CreateTokenDialog::GetTokenName()
 {
-    if (type == IntFromTokenType(TokenType::ROOT))
+    if (type == IntFromTokenType(KnownTokenType::ROOT))
         return ui->nameText->text();
-    else if (type == IntFromTokenType(TokenType::SUB))
+    else if (type == IntFromTokenType(KnownTokenType::SUB))
         return ui->tokenList->currentText() + "/" + ui->nameText->text();
-    else if (type == IntFromTokenType(TokenType::UNIQUE))
+    else if (type == IntFromTokenType(KnownTokenType::UNIQUE))
         return ui->tokenList->currentText() + "#" + ui->nameText->text();
     return "";
 }
 
 void CreateTokenDialog::UpdateTokenNameMaxSize()
 {
-    if (type == IntFromTokenType(TokenType::ROOT)) {
+    if (type == IntFromTokenType(KnownTokenType::ROOT)) {
         ui->nameText->setMaxLength(30);
-    } else if (type == IntFromTokenType(TokenType::SUB) || type == IntFromTokenType(TokenType::UNIQUE)) {
+    } else if (type == IntFromTokenType(KnownTokenType::SUB) || type == IntFromTokenType(KnownTokenType::UNIQUE)) {
         ui->nameText->setMaxLength(30 - (ui->tokenList->currentText().size() + 1));
     }
 }
 
 void CreateTokenDialog::UpdateTokenNameToUpper()
 {
-    if (type == IntFromTokenType(TokenType::ROOT) || type == IntFromTokenType(TokenType::SUB)) {
+    if (type == IntFromTokenType(KnownTokenType::ROOT) || type == IntFromTokenType(KnownTokenType::SUB)) {
         ui->nameText->setText(ui->nameText->text().toUpper());
     }
 }

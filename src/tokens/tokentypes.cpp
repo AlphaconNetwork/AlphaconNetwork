@@ -5,10 +5,10 @@
 
 #include "tokentypes.h"
 
-int IntFromTokenType(TokenType type) {
+int IntFromTokenType(KnownTokenType type) {
     return (int)type;
 }
 
-TokenType TokenTypeFromInt(int nType) {
-    return (TokenType)nType;
+KnownTokenType TokenTypeFromInt(int nType) {
+    return (KnownTokenType)nType;
 }
