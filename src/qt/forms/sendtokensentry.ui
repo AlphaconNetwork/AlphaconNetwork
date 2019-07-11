@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>883</width>
-    <height>219</height>
+    <height>272</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -39,45 +39,12 @@
     <property name="verticalSpacing">
      <number>8</number>
     </property>
-    <item row="6" column="1">
-     <widget class="QLabel" name="tokenAmountLabel">
-      <property name="text">
-       <string/>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="1">
-     <widget class="QLabel" name="ownershipWarningMessage">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="tokenBoxLabel">
-      <property name="text">
-       <string>Token:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="payToLabel">
-      <property name="text">
-       <string>Pay &amp;To:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="buddy">
-       <cstring>payTo</cstring>
-      </property>
-     </widget>
+    <item row="5" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayoutAmount" stretch="0">
+      <item>
+       <widget class="TokenAmountField" name="payTokenAmount"/>
+      </item>
+     </layout>
     </item>
     <item row="5" column="0">
      <widget class="QLabel" name="amountLabel">
@@ -89,57 +56,7 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="1">
-     <layout class="QHBoxLayout" name="horizontalLayoutAmount" stretch="0">
-      <item>
-       <widget class="TokenAmountField" name="payTokenAmount"/>
-      </item>
-     </layout>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="tokenLockTimeLabel">
-      <property name="text">
-       <string>Lock time:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="buddy">
-       <cstring>tokenLockTime</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QValidatedLineEdit" name="tokenLockTime">
-      <property name="toolTip">
-       <string>Enter height or timestamp lock time for token transfer (default = 0)</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="labellLabel">
-      <property name="text">
-       <string>&amp;Label:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="buddy">
-       <cstring>addAsLabel</cstring>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="0">
-     <widget class="QLabel" name="messageLabel">
-      <property name="text">
-       <string>Message:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
+    <item row="1" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="spacing">
        <number>0</number>
@@ -173,7 +90,64 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="1">
+    <item row="7" column="2">
+     <widget class="QLabel" name="ownershipWarningMessage">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="QLineEdit" name="addAsLabel">
+      <property name="toolTip">
+       <string>Enter a label for this address to add it to the list of used addresses</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="tokenBoxLabel">
+      <property name="text">
+       <string>Token:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="2">
+     <widget class="QLabel" name="tokenAmountLabel">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="payToLabel">
+      <property name="text">
+       <string>Pay &amp;To:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="buddy">
+       <cstring>payTo</cstring>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="2">
+     <widget class="QLabel" name="messageTextLabel">
+      <property name="toolTip">
+       <string>A message that was attached to the alphacon: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Alphacon network.</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
      <layout class="QHBoxLayout" name="payToLayout">
       <property name="spacing">
        <number>0</number>
@@ -253,20 +227,53 @@
       </item>
      </layout>
     </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="addAsLabel">
-      <property name="toolTip">
-       <string>Enter a label for this address to add it to the list of used addresses</string>
+    <item row="9" column="0">
+     <widget class="QLabel" name="messageLabel">
+      <property name="text">
+       <string>Message:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item row="8" column="1">
-     <widget class="QLabel" name="messageTextLabel">
-      <property name="toolTip">
-       <string>A message that was attached to the alphacon: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Alphacon network.</string>
+    <item row="3" column="0">
+     <widget class="QLabel" name="labellLabel">
+      <property name="text">
+       <string>&amp;Label:</string>
       </property>
-      <property name="textFormat">
-       <enum>Qt::PlainText</enum>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="buddy">
+       <cstring>addAsLabel</cstring>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="tokenLockTimeLabel">
+      <property name="text">
+       <string>Lock time:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="QDateTimeEdit" name="tokenLockTime">
+      <property name="date">
+       <date>
+        <year>2019</year>
+        <month>1</month>
+        <day>1</day>
+       </date>
+      </property>
+      <property name="displayFormat">
+       <string>dd.MM.yyyy HH:mm</string>
+      </property>
+      <property name="calendarPopup">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -411,6 +418,15 @@
         </color>
        </brush>
       </colorrole>
+      <colorrole role="PlaceholderText">
+       <brush brushstyle="NoBrush">
+        <color alpha="128">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </colorrole>
      </active>
      <inactive>
       <colorrole role="WindowText">
@@ -548,6 +564,15 @@
         </color>
        </brush>
       </colorrole>
+      <colorrole role="PlaceholderText">
+       <brush brushstyle="NoBrush">
+        <color alpha="128">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </colorrole>
      </inactive>
      <disabled>
       <colorrole role="WindowText">
@@ -679,6 +704,15 @@
       <colorrole role="ToolTipText">
        <brush brushstyle="SolidPattern">
         <color alpha="255">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </colorrole>
+      <colorrole role="PlaceholderText">
+       <brush brushstyle="NoBrush">
+        <color alpha="128">
          <red>0</red>
          <green>0</green>
          <blue>0</blue>
@@ -922,6 +956,15 @@
         </color>
        </brush>
       </colorrole>
+      <colorrole role="PlaceholderText">
+       <brush brushstyle="NoBrush">
+        <color alpha="128">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </colorrole>
      </active>
      <inactive>
       <colorrole role="WindowText">
@@ -1062,6 +1105,15 @@
       <colorrole role="ToolTipText">
        <brush brushstyle="SolidPattern">
         <color alpha="255">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </colorrole>
+      <colorrole role="PlaceholderText">
+       <brush brushstyle="NoBrush">
+        <color alpha="128">
          <red>0</red>
          <green>0</green>
          <blue>0</blue>
@@ -1214,6 +1266,15 @@
         </color>
        </brush>
       </colorrole>
+      <colorrole role="PlaceholderText">
+       <brush brushstyle="NoBrush">
+        <color alpha="128">
+         <red>0</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </brush>
+      </colorrole>
      </disabled>
     </palette>
    </property>
@@ -1332,7 +1393,6 @@
   <tabstop>pasteButton</tabstop>
   <tabstop>deleteButton</tabstop>
   <tabstop>addAsLabel</tabstop>
-  <tabstop>tokenLockTime</tabstop>
   <tabstop>payAmount_is</tabstop>
   <tabstop>deleteButton_is</tabstop>
   <tabstop>payAmount_s</tabstop>

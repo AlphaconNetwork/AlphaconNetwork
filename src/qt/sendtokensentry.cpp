@@ -47,7 +47,6 @@ SendTokensEntry::SendTokensEntry(const PlatformStyle *_platformStyle, const QStr
         ui->payToLayout->setSpacing(4);
 #if QT_VERSION >= 0x040700
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
-    ui->tokenLockTime->setPlaceholderText(tr("Enter height or timestamp lock time for token transfer (default = 0)"));
 #endif
 
     // normal alphacon address field
@@ -130,6 +129,7 @@ SendTokensEntry::SendTokensEntry(const PlatformStyle *_platformStyle, const QStr
     ui->payTo->setFont(GUIUtil::getSubLabelFont());
     ui->addAsLabel->setFont(GUIUtil::getSubLabelFont());
     ui->tokenLockTime->setFont(GUIUtil::getSubLabelFont());
+    ui->tokenLockTime->setMinimumDate(QDate::currentDate());
     ui->payTokenAmount->setFont(GUIUtil::getSubLabelFont());
     ui->messageTextLabel->setFont(GUIUtil::getSubLabelFont());
     ui->tokenAmountLabel->setFont(GUIUtil::getSubLabelFont());
@@ -235,14 +235,6 @@ bool SendTokensEntry::validate()
         retval = false;
     }
 
-    if (ui->tokenLockTime->text() != "") {
-        QRegExp re("\\d*");
-        if (!re.exactMatch(ui->tokenLockTime->text())) {
-            ui->tokenLockTime->setValid(false);
-            retval = false;
-        }
-    }
-
     // TODO check to make sure the payAmount value is within the constraints of how much you own
 
     return retval;
@@ -258,11 +250,13 @@ SendTokensRecipient SendTokensEntry::getValue()
     recipient.tokenName = ui->tokenSelectionBox->currentText();
     recipient.address = ui->payTo->text();
     recipient.label = ui->addAsLabel->text();
-    if (ui->tokenLockTime->text() != "") {
-        recipient.tokenLockTime = ui->tokenLockTime->text().toInt();
-    } else {
+
+    if (chainActive.Tip()->GetMedianTimePast() > ui->tokenLockTime->dateTime().toTime_t()) {
         recipient.tokenLockTime = 0;
+    } else {
+        recipient.tokenLockTime = ui->tokenLockTime->dateTime().toTime_t();
     }
+
     recipient.amount = ui->payTokenAmount->value();
     recipient.message = ui->messageTextLabel->text();
 
