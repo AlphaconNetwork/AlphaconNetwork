@@ -422,23 +422,8 @@ void SendCoinsDialog::on_sendButton_clicked()
     // add total amount in all subdivision units
     questionString.append("<hr />");
     CAmount totalAmount = currentTransaction.getTotalTransactionAmount() + txFee;
-    QStringList alternativeUnits;
-    for (AlphaconUnits::Unit u : AlphaconUnits::availableUnits())
-    {
-        if(u != model->getOptionsModel()->getDisplayUnit())
-            alternativeUnits.append(AlphaconUnits::formatHtmlWithUnit(u, totalAmount));
-    }
     questionString.append(tr("Total Amount %1")
         .arg(AlphaconUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), totalAmount)));
-    questionString.append(QString("<span style='font-size:10pt;font-weight:normal;'><br />(=%2)</span>")
-        .arg(alternativeUnits.join(" " + tr("or") + "<br />")));
-
-//    if (ui->optInRBF->isChecked())
-//    {
-//        questionString.append("<hr /><span>");
-//        questionString.append(tr("This transaction signals replaceability (optin-RBF)."));
-//        questionString.append("</span>");
-//    }
 
     SendConfirmationDialog confirmationDialog(tr("Confirm send coins"),
         questionString.arg(formatted.join("<br />")), SEND_CONFIRM_DELAY, this);

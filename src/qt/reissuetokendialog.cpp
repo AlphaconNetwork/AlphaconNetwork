@@ -789,15 +789,8 @@ void ReissueTokenDialog::onReissueTokenClicked()
     questionString.append("<hr />");
     CAmount totalAmount = GetReissueTokenBurnAmount() + nFeeRequired;
     QStringList alternativeUnits;
-    for (AlphaconUnits::Unit u : AlphaconUnits::availableUnits())
-    {
-        if(u != model->getOptionsModel()->getDisplayUnit())
-            alternativeUnits.append(AlphaconUnits::formatHtmlWithUnit(u, totalAmount));
-    }
     questionString.append(tr("Total Amount %1")
                                   .arg(AlphaconUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), totalAmount)));
-    questionString.append(QString("<span style='font-size:10pt;font-weight:normal;'><br />(=%2)</span>")
-                                  .arg(alternativeUnits.join(" " + tr("or") + "<br />")));
 
     SendConfirmationDialog confirmationDialog(tr("Confirm reissue tokens"),
                                               questionString.arg(formatted.join("<br />")), SEND_CONFIRM_DELAY, this);
