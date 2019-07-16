@@ -398,7 +398,7 @@ void SendCoinsDialog::on_sendButton_clicked()
         }
 
         if (rcp.coinLockTime > 0) {
-            recipientElement.append(tr(" with lock time %1").arg(rcp.coinLockTime));
+            recipientElement.append(tr(" locked till %1").arg(QDateTime::fromTime_t(rcp.coinLockTime).toString("yyyy.MM.dd HH:mm")));
         }
 
         formatted.append(recipientElement);

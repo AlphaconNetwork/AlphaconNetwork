@@ -50,6 +50,7 @@ SendCoinsEntry::SendCoinsEntry(const PlatformStyle *_platformStyle, QWidget *par
     // Connect signals
     connect(ui->payAmount, SIGNAL(valueChanged()), this, SIGNAL(payAmountChanged()));
     connect(ui->checkboxSubtractFeeFromAmount, SIGNAL(toggled(bool)), this, SIGNAL(subtractFeeFromAmountChanged()));
+    connect(ui->useLockTime, SIGNAL(toggled(bool)), this, SLOT(toggleTimeLock(bool)));
     connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_is, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_s, SIGNAL(clicked()), this, SLOT(deleteClicked()));
@@ -72,12 +73,18 @@ SendCoinsEntry::SendCoinsEntry(const PlatformStyle *_platformStyle, QWidget *par
     ui->lockTimeLabel->setFont(GUIUtil::getSubLabelFont());
 
     ui->checkboxSubtractFeeFromAmount->setStyleSheet(QString(".QCheckBox{ %1; }").arg(STRING_LABEL_COLOR));
+    ui->useLockTime->setStyleSheet(QString(".QCheckBox{ %1; }").arg(STRING_LABEL_COLOR));
     ui->payTo->setFont(GUIUtil::getSubLabelFont());
     ui->addAsLabel->setFont(GUIUtil::getSubLabelFont());
     ui->coinLockTime->setFont(GUIUtil::getSubLabelFont());
     ui->coinLockTime->setMinimumDate(QDate::currentDate());
     ui->payAmount->setFont(GUIUtil::getSubLabelFont());
     ui->messageTextLabel->setFont(GUIUtil::getSubLabelFont());
+}
+
+void SendCoinsEntry::toggleTimeLock(bool checked)
+{
+    ui->coinLockTime->setEnabled(checked);
 }
 
 SendCoinsEntry::~SendCoinsEntry()
@@ -127,6 +134,7 @@ void SendCoinsEntry::clear()
     ui->coinLockTime->clear();
     ui->payAmount->clear();
     ui->checkboxSubtractFeeFromAmount->setCheckState(Qt::Unchecked);
+    ui->useLockTime->setCheckState(Qt::Unchecked);
     ui->messageTextLabel->clear();
     ui->messageTextLabel->hide();
     ui->messageLabel->hide();
@@ -198,10 +206,10 @@ SendCoinsRecipient SendCoinsEntry::getValue()
     recipient.label = ui->addAsLabel->text();
     recipient.label = ui->addAsLabel->text();
 
-    if (chainActive.Tip()->GetMedianTimePast() > ui->coinLockTime->dateTime().toTime_t()) {
-        recipient.coinLockTime = 0;
-    } else {
+    if (ui->useLockTime->checkState() == Qt::Checked) {
         recipient.coinLockTime = ui->coinLockTime->dateTime().toTime_t();
+    } else {
+        recipient.coinLockTime = 0;
     }
 
     recipient.amount = ui->payAmount->value();

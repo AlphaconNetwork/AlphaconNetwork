@@ -56,6 +56,7 @@ SendTokensEntry::SendTokensEntry(const PlatformStyle *_platformStyle, const QStr
 
     // Connect signals
     connect(ui->payTokenAmount, SIGNAL(valueChanged()), this, SIGNAL(payAmountChanged()));
+    connect(ui->useLockTime, SIGNAL(toggled(bool)), this, SLOT(toggleTimeLock(bool)));
     connect(ui->deleteButton, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_is, SIGNAL(clicked()), this, SLOT(deleteClicked()));
     connect(ui->deleteButton_s, SIGNAL(clicked()), this, SLOT(deleteClicked()));
@@ -126,6 +127,7 @@ SendTokensEntry::SendTokensEntry(const PlatformStyle *_platformStyle, const QStr
 
     ui->tokenSelectionBox->setFont(GUIUtil::getSubLabelFont());
     ui->administratorCheckbox->setFont(GUIUtil::getSubLabelFont());
+    ui->useLockTime->setStyleSheet(QString(".QCheckBox{ %1; }").arg(STRING_LABEL_COLOR));
     ui->payTo->setFont(GUIUtil::getSubLabelFont());
     ui->addAsLabel->setFont(GUIUtil::getSubLabelFont());
     ui->tokenLockTime->setFont(GUIUtil::getSubLabelFont());
@@ -134,6 +136,11 @@ SendTokensEntry::SendTokensEntry(const PlatformStyle *_platformStyle, const QStr
     ui->messageTextLabel->setFont(GUIUtil::getSubLabelFont());
     ui->tokenAmountLabel->setFont(GUIUtil::getSubLabelFont());
     ui->ownershipWarningMessage->setFont(GUIUtil::getSubLabelFont());
+}
+
+void SendTokensEntry::toggleTimeLock(bool checked)
+{
+    ui->tokenLockTime->setEnabled(checked);
 }
 
 SendTokensEntry::~SendTokensEntry()
@@ -181,6 +188,7 @@ void SendTokensEntry::clear()
     ui->payTo->clear();
     ui->addAsLabel->clear();
     ui->tokenLockTime->clear();
+    ui->useLockTime->setCheckState(Qt::Unchecked);
     ui->messageTextLabel->clear();
     ui->messageTextLabel->hide();
     ui->messageLabel->hide();
@@ -251,10 +259,10 @@ SendTokensRecipient SendTokensEntry::getValue()
     recipient.address = ui->payTo->text();
     recipient.label = ui->addAsLabel->text();
 
-    if (chainActive.Tip()->GetMedianTimePast() > ui->tokenLockTime->dateTime().toTime_t()) {
-        recipient.tokenLockTime = 0;
-    } else {
+    if (ui->useLockTime->checkState() == Qt::Checked) {
         recipient.tokenLockTime = ui->tokenLockTime->dateTime().toTime_t();
+    } else {
+        recipient.tokenLockTime = 0;
     }
 
     recipient.amount = ui->payTokenAmount->value();
@@ -496,7 +504,7 @@ void SendTokensEntry::switchAdministratorList(bool fSwitchStatus)
             ui->payTokenAmount->setDisabled(false);
             ui->tokenAmountLabel->clear();
 
-            ui->tokenLockTime->setDisabled(false);
+            ui->tokenLockTime->setDisabled(true);
             ui->tokenLockTime->clear();
 
             ui->tokenSelectionBox->setFocus();

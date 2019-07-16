@@ -414,7 +414,7 @@ void TokensDialog::on_sendButton_clicked()
         }
 
         if (rcp.tokenLockTime > 0) {
-            recipientElement.append(QString(" with lock time %1").arg(rcp.tokenLockTime));
+            recipientElement.append(QString(" locked till %1").arg(QDateTime::fromTime_t(rcp.tokenLockTime).toString("yyyy.MM.dd HH:mm")));
         }
 
         formatted.append(recipientElement);

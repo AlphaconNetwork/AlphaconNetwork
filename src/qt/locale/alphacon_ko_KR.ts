@@ -757,6 +757,10 @@
         <source>Enter height or timestamp lock time for token transfer (default = 0)</source>
         <translation>지정한 기간 이후에 전송이 되도록 합니다. 단위:분</translation>
     </message>
+    <message>
+        <source>Use time lock</source>
+        <translation>락업 기능 사용</translation>
+    </message>
 </context>
 <context>
     <name>TokensDialog</name>
@@ -794,6 +798,10 @@
     <message>
         <source>Balance:</source>
         <translation>잔고:</translation>
+    </message>
+    <message>
+        <source> locked till %1</source>
+        <translation> %1 에 전송 됩니다</translation>
     </message>
 </context>
 <context>
@@ -2238,12 +2246,12 @@
         <translation>%1을(를) %2(으)로</translation>
     </message>
     <message>
-        <source> with lock time %1</source>
-        <translation> %1 잠금 시간</translation>
+        <source> locked till %1</source>
+        <translation> %1 에 전송 됩니다</translation>
     </message>
     <message>
         <source>Are you sure you want to send?</source>
-        <translation>정말로 보내시겠습니까?</translation>
+        <translation>아래와 같이 전송하시겠습니까?</translation>
     </message>
     <message>
         <source>added as transaction fee</source>
@@ -2251,7 +2259,7 @@
     </message>
     <message>
         <source>Total Amount %1</source>
-        <translation>총 액수 %1</translation>
+        <translation>총 전송량 %1</translation>
     </message>
     <message>
         <source>or</source>
@@ -2423,6 +2431,10 @@
     <message>
         <source>Lock time:</source>
         <translation>락업시간(분):</translation>
+    </message>
+    <message>
+        <source>Use time lock</source>
+        <translation>락업 기능 사용</translation>
     </message>
 </context>
 <context>
