@@ -20,6 +20,7 @@
 #include "wallet/db.h"
 #include "wallet/wallet.h"
 
+#include <QDateTime>
 #include <stdint.h>
 #include <string>
 
@@ -275,6 +276,23 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx, TransactionReco
         strHTML += "<br>" + tr("Generated coins must mature %1 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to \"not accepted\" and it won't be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.").arg(QString::number(numBlocksToMaturity)) + "<br>";
     }
 
+    for (const CTxOut& txout : wtx.tx->vout) {
+        std::vector<valtype> vSolutions;
+        txnouttype whichType;
+        if (Solver(txout.scriptPubKey, whichType, vSolutions))
+        {
+            if (whichType == TX_CLTV)
+            {
+                CScriptNum sn(vSolutions[0], true, 5);
+                if (sn.getint64() > LOCKTIME_THRESHOLD) {
+                    strHTML += "<b>" + tr("Lock time") + ":</b> " + QDateTime::fromTime_t(sn.getint64()).toString("yyyy.MM.dd HH:mm") + "<br>";
+                } else {
+                    strHTML += "<b>" + tr("Lock time") + ":</b> Block " + QString::number(sn.getint64()) + "<br>";
+                }
+            }
+        }
+    }
+
     //
     // Debug view
     //
@@ -451,17 +469,19 @@ void TransactionDesc::CreateDebugString(QString& strHTML, CWallet *wallet, CWall
                        AlphaconUnits::formatHtmlWithUnit(unit, -debit) + "<br>";
         }
 
-    for (const CTxOut& txout : wtx.tx->vout)
+    for (const CTxOut& txout : wtx.tx->vout) {
         if (wallet->IsMine(txout)) {
             if (txout.scriptPubKey.IsTokenScript()) {
                 CTokenOutputEntry tokenData;
                 GetTokenData(txout.scriptPubKey, tokenData);
                 strHTML += "<b>" + tr("Credit") + ":</b> " +
                            AlphaconUnits::formatWithCustomName(QString::fromStdString(tokenData.tokenName), tokenData.nAmount) + "<br>";
-            } else
+            } else {
                 strHTML += "<b>" + tr("Credit") + ":</b> " +
                            AlphaconUnits::formatHtmlWithUnit(unit, wallet->GetCredit(txout, ISMINE_ALL)) + "<br>";
+            }
         }
+    }
 
     strHTML += "<br><b>" + tr("Transaction") + ":</b><br>";
     strHTML += GUIUtil::HtmlEscape(wtx.tx->ToString(), true);

@@ -230,7 +230,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, CBlock
     return ISMINE_NO;
 }
 
-bool isCLTV(const CKeyStore &keystore, const CScript& scriptPubKey, CScriptNum& nFreezeLockTime)
+bool IsTimeLock(const CKeyStore &keystore, const CScript& scriptPubKey, CScriptNum& nFreezeLockTime)
 {
     std::vector<valtype> vSolutions;
     txnouttype whichType;

@@ -362,6 +362,8 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     ui->labelTotalText->setFont(GUIUtil::getSubLabelFont());
     ui->labelTotal->setFont(GUIUtil::getTopLabelFontBolded());
     ui->labelWatchTotal->setFont(GUIUtil::getTopLabelFontBolded());
+    ui->labelStakeText->setFont(GUIUtil::getSubLabelFont());
+    ui->labelStake->setFont(GUIUtil::getSubLabelFont());
 
     /** Create the search bar for tokens */
     ui->tokenSearch->setAttribute(Qt::WA_MacShowFocusRect, 0);

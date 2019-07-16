@@ -3896,7 +3896,7 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
 
                     // If the input is a Freeze CLTV lock-by-blocktime then update the txNew.nLockTime
                     CScriptNum nFreezeLockTime(0);
-                    if (isCLTV(*this, coin.txout.scriptPubKey, nFreezeLockTime))
+                    if (IsTimeLock(*this, coin.txout.scriptPubKey, nFreezeLockTime))
                     {
                         if (nFreezeLockTime.getint64() > LOCKTIME_THRESHOLD)
                             txNew.nLockTime = chainActive.Tip()->GetMedianTimePast();

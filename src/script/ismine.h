@@ -41,6 +41,6 @@ isminetype IsMine(const CKeyStore& keystore, const CScript& scriptPubKey, CBlock
 isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, CBlockIndex* bestBlock, bool& isInvalid, SigVersion = SIGVERSION_BASE);
 isminetype IsMine(const CKeyStore& keystore, const CTxDestination& dest, CBlockIndex* bestBlock, SigVersion = SIGVERSION_BASE);
 
-bool isCLTV(const CKeyStore &keystore, const CScript& scriptPubKey, CScriptNum& nFreezeLockTime); // Freeze
+bool IsTimeLock(const CKeyStore &keystore, const CScript& scriptPubKey, CScriptNum& nFreezeLockTime); // Freeze
 
 #endif // ALPHACON_SCRIPT_ISMINE_H

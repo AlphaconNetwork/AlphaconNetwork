@@ -847,53 +847,62 @@ void AlphaconGUI::openClicked()
 
 void AlphaconGUI::gotoOverviewPage()
 {
+    footerWidget->show();
     overviewAction->setChecked(true);
     if (walletFrame) walletFrame->gotoOverviewPage();
 }
 
 void AlphaconGUI::gotoHistoryPage()
 {
+    footerWidget->hide();
     historyAction->setChecked(true);
     if (walletFrame) walletFrame->gotoHistoryPage();
 }
 
 void AlphaconGUI::gotoReceiveCoinsPage()
 {
+    footerWidget->hide();
     receiveCoinsAction->setChecked(true);
     if (walletFrame) walletFrame->gotoReceiveCoinsPage();
 }
 
 void AlphaconGUI::gotoSendCoinsPage(QString addr)
 {
+    footerWidget->hide();
     sendCoinsAction->setChecked(true);
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
 }
 
 void AlphaconGUI::gotoSignMessageTab(QString addr)
 {
+    footerWidget->hide();
     if (walletFrame) walletFrame->gotoSignMessageTab(addr);
 }
 
 void AlphaconGUI::gotoVerifyMessageTab(QString addr)
 {
+    footerWidget->hide();
     if (walletFrame) walletFrame->gotoVerifyMessageTab(addr);
 }
 
 /** TOKENS START */
 void AlphaconGUI::gotoTokensPage()
 {
+    footerWidget->hide();
     transferTokenAction->setChecked(true);
     if (walletFrame) walletFrame->gotoTokensPage();
 };
 
 void AlphaconGUI::gotoCreateTokensPage()
 {
+    footerWidget->hide();
     createTokenAction->setChecked(true);
     if (walletFrame) walletFrame->gotoCreateTokensPage();
 };
 
 void AlphaconGUI::gotoManageTokensPage()
 {
+    footerWidget->hide();
     manageTokenAction->setChecked(true);
     if (walletFrame) walletFrame->gotoManageTokensPage();
 };

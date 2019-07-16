@@ -239,6 +239,8 @@ bool CScript::IsPayToPublicKeyHashLocked() const
             (*this)[26 + shift] == OP_EQUALVERIFY &&
             (*this)[27 + shift] == OP_CHECKSIG);
     }
+
+    return false;
 }
 
 bool CScript::IsPayToScriptHash() const
