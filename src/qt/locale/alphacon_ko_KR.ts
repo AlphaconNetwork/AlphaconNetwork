@@ -735,7 +735,7 @@
     </message>
     <message>
         <source>Lock time:</source>
-        <translation>락업시간(분):</translation>
+        <translation>락업:</translation>
     </message>
     <message>
         <source>Amount:</source>
@@ -2430,7 +2430,7 @@
     </message>
     <message>
         <source>Lock time:</source>
-        <translation>락업시간(분):</translation>
+        <translation>락업:</translation>
     </message>
     <message>
         <source>Use time lock</source>
