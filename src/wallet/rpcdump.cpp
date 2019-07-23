@@ -218,6 +218,12 @@ void ImportAddress(CWallet* const pwallet, const CTxDestination& dest, const std
         pwallet->SetAddressBook(dest, strLabel, "receive");
 }
 
+void RemoveAddress(CWallet* const pwallet, const CTxDestination& dest)
+{
+    CScript script = GetScriptForDestination(dest);
+    pwallet->RemoveWatchOnly(script);
+}
+
 UniValue importaddress(const JSONRPCRequest& request)
 {
     CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
@@ -276,6 +282,49 @@ UniValue importaddress(const JSONRPCRequest& request)
     } else if (IsHex(request.params[0].get_str())) {
         std::vector<unsigned char> data(ParseHex(request.params[0].get_str()));
         ImportScript(pwallet, CScript(data.begin(), data.end()), strLabel, fP2SH);
+    } else {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Alphacon address or script");
+    }
+
+    if (fRescan)
+    {
+        pwallet->RescanFromTime(TIMESTAMP_MIN, true /* update */);
+        pwallet->ReacceptWalletTransactions();
+    }
+
+    return NullUniValue;
+}
+
+UniValue removeaddress(const JSONRPCRequest& request)
+{
+    CWallet * const pwallet = GetWalletForJSONRPCRequest(request);
+    if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
+        return NullUniValue;
+    }
+
+    if (request.fHelp || request.params.size() < 1 || request.params.size() > 4)
+        throw std::runtime_error(
+            "importaddress \"address\" ( \"label\" rescan p2sh )\n"
+            "\nRemove a script (in hex) or address that can be watched as if it were in your wallet but cannot be used to spend.\n"
+            "\nArguments:\n"
+            "1. \"script\"           (string, required) The hex-encoded script (or address)\n"
+            "\nNote: This call can take minutes to complete if rescan is true.\n"
+            "If you have the full public key, you should call importpubkey instead of this.\n"
+            "\nExamples:\n"
+            "\nRemove a script with rescan\n"
+            + HelpExampleCli("removeaddress", "\"myscript\"")
+        );
+
+    bool fRescan = true;
+    if (fPruneMode) {
+        bool fRescan = false;
+    }
+
+    LOCK2(cs_main, pwallet->cs_wallet);
+
+    CTxDestination dest = DecodeDestination(request.params[0].get_str());
+    if (IsValidDestination(dest)) {
+        RemoveAddress(pwallet, dest);
     } else {
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Alphacon address or script");
     }
