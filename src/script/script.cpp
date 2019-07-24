@@ -229,8 +229,9 @@ bool CScript::IsPayToPublicKeyHash() const
 bool CScript::IsPayToPublicKeyHashLocked() const
 {
     // Extra-fast test for pay-to-pubkey-hash locked CScripts:
-    if (this->size() >= 30) {
+    if (this->size() >= 28) {
         int shift = (*this)[0];
+        if (this->size() == 28) { shift = 0; }
         return ((*this)[1 + shift] == OP_CHECKLOCKTIMEVERIFY &&
             (*this)[2 + shift] == OP_DROP &&
             (*this)[3 + shift] == OP_DUP &&
