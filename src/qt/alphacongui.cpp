@@ -101,7 +101,6 @@ AlphaconGUI::AlphaconGUI(const PlatformStyle *_platformStyle, const NetworkStyle
     enableWallet(false),
     clientModel(0),
     walletFrame(0),
-    unitDisplayControl(0),
     labelWalletEncryptionIcon(0),
     labelWalletHDStatusIcon(0),
     connectionsControl(0),
@@ -234,7 +233,6 @@ AlphaconGUI::AlphaconGUI(const PlatformStyle *_platformStyle, const NetworkStyle
     QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
     frameBlocksLayout->setContentsMargins(3,0,3,0);
     frameBlocksLayout->setSpacing(3);
-    unitDisplayControl = new UnitDisplayStatusBarControl(platformStyle);
     labelWalletEncryptionIcon = new QLabel();
     labelWalletHDStatusIcon = new QLabel();
     connectionsControl = new GUIUtil::ClickableLabel();
@@ -250,7 +248,6 @@ AlphaconGUI::AlphaconGUI(const PlatformStyle *_platformStyle, const NetworkStyle
     if(enableWallet)
     {
         frameBlocksLayout->addStretch();
-        frameBlocksLayout->addWidget(unitDisplayControl);
         frameBlocksLayout->addStretch();
         frameBlocksLayout->addWidget(labelWalletEncryptionIcon);
         frameBlocksLayout->addWidget(labelWalletHDStatusIcon);
@@ -657,7 +654,6 @@ void AlphaconGUI::setClientModel(ClientModel *_clientModel)
             walletFrame->setClientModel(_clientModel);
         }
 #endif // ENABLE_WALLET
-        unitDisplayControl->setOptionsModel(_clientModel->getOptionsModel());
         
         OptionsModel* optionsModel = _clientModel->getOptionsModel();
         if(optionsModel)
@@ -684,7 +680,6 @@ void AlphaconGUI::setClientModel(ClientModel *_clientModel)
             walletFrame->setClientModel(nullptr);
         }
 #endif // ENABLE_WALLET
-        unitDisplayControl->setOptionsModel(nullptr);
     }
 }
 

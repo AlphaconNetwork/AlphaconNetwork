@@ -85,7 +85,6 @@ private:
     ClientModel *clientModel;
     WalletFrame *walletFrame;
 
-    UnitDisplayStatusBarControl *unitDisplayControl;
     QLabel *labelWalletEncryptionIcon;
     QLabel *labelWalletHDStatusIcon;
     QLabel *connectionsControl;
