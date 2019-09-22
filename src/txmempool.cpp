@@ -462,7 +462,9 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
                 uint160 hashBytes;
                 std::string tokenName;
                 CAmount tokenAmount;
-                if (ParseTokenScript(prevout.scriptPubKey, hashBytes, tokenName, tokenAmount)) {
+                uint32_t nTokenLockTime;
+
+                if (ParseTokenScript(prevout.scriptPubKey, hashBytes, tokenName, tokenAmount, nTokenLockTime)) {
                     CMempoolAddressDeltaKey key(1, hashBytes, tokenName, txhash, j, 1);
                     CMempoolAddressDelta delta(entry.GetTime(), tokenAmount * -1, input.prevout.hash, input.prevout.n);
                     mapAddress.insert(std::make_pair(key, delta));
@@ -505,7 +507,9 @@ void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewC
                 uint160 hashBytes;
                 std::string tokenName;
                 CAmount tokenAmount;
-                if (ParseTokenScript(out.scriptPubKey, hashBytes, tokenName, tokenAmount)) {
+                uint32_t nTokenLockTime;
+
+                if (ParseTokenScript(out.scriptPubKey, hashBytes, tokenName, tokenAmount, nTokenLockTime)) {
                     std::pair<addressDeltaMap::iterator, bool> ret;
                     CMempoolAddressDeltaKey key(1, hashBytes, tokenName, txhash, k, 0);
                     mapAddress.insert(std::make_pair(key, CMempoolAddressDelta(entry.GetTime(), tokenAmount)));

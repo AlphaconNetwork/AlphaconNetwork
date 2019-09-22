@@ -1789,15 +1789,16 @@ static DisconnectResult DisconnectBlock(const CBlock& block, const CBlockIndex* 
                         std::string tokenName;
                         CAmount tokenAmount;
                         uint160 hashBytes;
+                        uint32_t nTokenLockTime;
 
-                        if (ParseTokenScript(out.scriptPubKey, hashBytes, tokenName, tokenAmount)) {
+                        if (ParseTokenScript(out.scriptPubKey, hashBytes, tokenName, tokenAmount, nTokenLockTime)) {
 //                            std::cout << "ConnectBlock(): pushing tokens onto addressIndex: " << "1" << ", " << hashBytes.GetHex() << ", " << tokenName << ", " << pindex->nHeight
 //                                      << ", " << i << ", " << hash.GetHex() << ", " << k << ", " << "true" << ", " << tokenAmount << std::endl;
 
                             // undo receiving activity
                             addressIndex.push_back(std::make_pair(
                                     CAddressIndexKey(1, uint160(hashBytes), tokenName, pindex->nHeight, i, hash, k,
-                                                     false), tokenAmount));
+                                                     false, nTokenLockTime), tokenAmount));
 
                             // undo unspent index
                             addressUnspentIndex.push_back(
@@ -1991,15 +1992,16 @@ static DisconnectResult DisconnectBlock(const CBlock& block, const CBlockIndex* 
                             std::string tokenName;
                             CAmount tokenAmount;
                             uint160 hashBytes;
+                            uint32_t nTokenLockTime;
 
-                            if (ParseTokenScript(prevout.scriptPubKey, hashBytes, tokenName, tokenAmount)) {
+                            if (ParseTokenScript(prevout.scriptPubKey, hashBytes, tokenName, tokenAmount, nTokenLockTime)) {
 //                                std::cout << "ConnectBlock(): pushing tokens onto addressIndex: " << "1" << ", " << hashBytes.GetHex() << ", " << tokenName << ", " << pindex->nHeight
 //                                          << ", " << i << ", " << hash.GetHex() << ", " << j << ", " << "true" << ", " << tokenAmount * -1 << std::endl;
 
                                 // undo spending activity
                                 addressIndex.push_back(std::make_pair(
                                         CAddressIndexKey(1, uint160(hashBytes), tokenName, pindex->nHeight, i, hash, j,
-                                                         true), tokenAmount * -1));
+                                                         true, nTokenLockTime), tokenAmount * -1));
 
                                 // restore unspent index
                                 addressUnspentIndex.push_back(std::make_pair(
@@ -2360,10 +2362,12 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                         if (AreTokensDeployed()) {
                             hashBytes.SetNull();
                             addressType = 0;
+                            uint32_t nTokenLockTime;
 
-                            if (ParseTokenScript(prevout.scriptPubKey, hashBytes, tokenName, tokenAmount)) {
+                            if (ParseTokenScript(prevout.scriptPubKey, hashBytes, tokenName, tokenAmount, nTokenLockTime)) {
                                 addressType = 1;
                                 isToken = true;
+                                timeLock = nTokenLockTime;
                             }
                         }
                         /** TOKENS END */
@@ -2376,7 +2380,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
 //                                      << ", " << i << ", " << txhash.GetHex() << ", " << j << ", " << "true" << ", " << tokenAmount * -1 << std::endl;
 
                             // record spending activity
-                            addressIndex.push_back(std::make_pair(CAddressIndexKey(addressType, hashBytes, tokenName, pindex->nHeight, i, txhash, j, true), tokenAmount * -1));
+                            addressIndex.push_back(std::make_pair(CAddressIndexKey(addressType, hashBytes, tokenName, pindex->nHeight, i, txhash, j, true, timeLock), tokenAmount * -1));
 
                             // remove address from unspent index
                             addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(addressType, hashBytes, tokenName, input.prevout.hash, input.prevout.n), CAddressUnspentValue()));
@@ -2539,14 +2543,15 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                         std::string tokenName;
                         CAmount tokenAmount;
                         uint160 hashBytes;
+                        uint32_t nTokenLockTime;
 
-                        if (ParseTokenScript(out.scriptPubKey, hashBytes, tokenName, tokenAmount)) {
+                        if (ParseTokenScript(out.scriptPubKey, hashBytes, tokenName, tokenAmount, nTokenLockTime)) {
 //                            std::cout << "ConnectBlock(): pushing tokens onto addressIndex: " << "1" << ", " << hashBytes.GetHex() << ", " << tokenName << ", " << pindex->nHeight
 //                                      << ", " << i << ", " << txhash.GetHex() << ", " << k << ", " << "true" << ", " << tokenAmount << std::endl;
 
                             // record receiving activity
                             addressIndex.push_back(std::make_pair(
-                                    CAddressIndexKey(1, hashBytes, tokenName, pindex->nHeight, i, txhash, k, false),
+                                    CAddressIndexKey(1, hashBytes, tokenName, pindex->nHeight, i, txhash, k, false, nTokenLockTime),
                                     tokenAmount));
 
                             // record unspent output

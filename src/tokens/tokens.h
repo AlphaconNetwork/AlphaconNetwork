@@ -328,5 +328,5 @@ bool CreateTransferTokenTransaction(CWallet* pwallet, const CCoinControl& coinCo
 bool SendTokenTransaction(CWallet* pwallet, CWalletTx& transaction, CReserveKey& reserveKey, std::pair<int, std::string>& error, std::string& txid);
 
 /** Helper method for extracting address bytes, token name and amount from an token script */
-bool ParseTokenScript(CScript scriptPubKey, uint160 &hashBytes, std::string &tokenName, CAmount &tokenAmount);
+bool ParseTokenScript(CScript scriptPubKey, uint160 &hashBytes, std::string &tokenName, CAmount &tokenAmount, uint32_t &nTokenLockTime);
 #endif //ALPHACONCOIN_TOKEN_PROTOCOL_H

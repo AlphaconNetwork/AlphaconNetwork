@@ -2917,7 +2917,7 @@ void GetTxOutTokenTypes(const std::vector<CTxOut>& vout, int& issues, int& reiss
     }
 }
 
-bool ParseTokenScript(CScript scriptPubKey, uint160 &hashBytes, std::string &tokenName, CAmount &tokenAmount) {
+bool ParseTokenScript(CScript scriptPubKey, uint160 &hashBytes, std::string &tokenName, CAmount &tokenAmount, uint32_t &nTokenLockTime) {
     int nType;
     bool fIsOwner;
     int _nStartingPoint;
@@ -2956,6 +2956,7 @@ bool ParseTokenScript(CScript scriptPubKey, uint160 &hashBytes, std::string &tok
             if (TransferTokenFromScript(scriptPubKey, token, _strAddress)) {
                 tokenName = token.strName;
                 tokenAmount = token.nAmount;
+                nTokenLockTime = token.nTokenLockTime;
                 isToken = true;
             } else {
                 LogPrintf("%s : Couldn't get transfer token from script: %s", __func__, HexStr(scriptPubKey));

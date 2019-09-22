@@ -1115,21 +1115,24 @@ UniValue getaddressbalance(const JSONRPCRequest& request)
 
         //tokenName -> (received, balance)
         std::map<std::string, std::pair<CAmount, CAmount>> balances;
-        CAmount locked = 0;
+        std::map<std::string, CAmount> locked;
 
         for (std::vector<std::pair<CAddressIndexKey, CAmount> >::const_iterator it = addressIndex.begin();
             it != addressIndex.end(); it++) {
                 std::string tokenName = it->first.token;
                 if (balances.count(tokenName) == 0) {
                     balances[tokenName] = std::make_pair(0, 0);
+                    locked[tokenName] = 0;
                 }
+
                 if (it->second > 0) {
                     balances[tokenName].first += it->second;
                 }
+
                 if ((int)chainActive.Height() > it->first.timeLock) {
                     balances[tokenName].second += it->second;
                 } else {
-                    locked += it->second;
+                    locked[tokenName] += it->second;
                 }
             }
 
@@ -1141,7 +1144,7 @@ UniValue getaddressbalance(const JSONRPCRequest& request)
             balance.push_back(Pair("tokenName", it->first));
             balance.push_back(Pair("balance", it->second.second));
             balance.push_back(Pair("received", it->second.first));
-            balance.push_back(Pair("locked", locked));
+            balance.push_back(Pair("locked", locked[it->first]));
             result.push_back(balance);
         }
 
