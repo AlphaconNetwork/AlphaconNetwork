@@ -893,7 +893,7 @@ UniValue getaddressutxos(const JSONRPCRequest& request)
             }
         }
 
-        if (nTokenLockTime > ((int64_t)nTokenLockTime < LOCKTIME_THRESHOLD ? (int64_t)chainActive.Height() : (int64_t)chainActive.Tip()->GetMedianTimePast())) {
+        if (nTokenLockTime > ((int64_t)nTokenLockTime < LOCKTIME_THRESHOLD ? (int64_t)it->second.blockHeight : (int64_t)chainActive.Tip()->GetMedianTimePast())) {
             output.push_back(Pair("address", address));
             output.push_back(Pair("tokenName", tokenNameOut));
             output.push_back(Pair("txid", it->first.txhash.GetHex()));
