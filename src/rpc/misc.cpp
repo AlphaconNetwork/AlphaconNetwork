@@ -880,6 +880,7 @@ UniValue getaddressutxos(const JSONRPCRequest& request)
     for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator it=unspentOutputs.begin(); it!=unspentOutputs.end(); it++) {
         UniValue output(UniValue::VOBJ);
         std::string address;
+        uint32_t nTokenLockTime;
         if (!getAddressFromIndex(it->first.type, it->first.hashBytes, address)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Unknown address type");
         }
@@ -887,20 +888,21 @@ UniValue getaddressutxos(const JSONRPCRequest& request)
         std::string tokenNameOut = "ALP";
         if (tokenName != "ALP") {
             CAmount _amount;
-            uint32_t nTokenLockTime;
             if (!GetTokenInfoFromScript(it->second.script, tokenNameOut, _amount, nTokenLockTime)) {
                 throw JSONRPCError(RPC_INTERNAL_ERROR, "Couldn't decode token script");
             }
         }
 
-        output.push_back(Pair("address", address));
-        output.push_back(Pair("tokenName", tokenNameOut));
-        output.push_back(Pair("txid", it->first.txhash.GetHex()));
-        output.push_back(Pair("outputIndex", (int)it->first.index));
-        output.push_back(Pair("script", HexStr(it->second.script.begin(), it->second.script.end())));
-        output.push_back(Pair("satoshis", it->second.satoshis));
-        output.push_back(Pair("height", it->second.blockHeight));
-        utxos.push_back(output);
+        if (nTokenLockTime > ((int64_t)nTokenLockTime < LOCKTIME_THRESHOLD ? (int64_t)chainActive.Height() : (int64_t)chainActive.Tip()->GetMedianTimePast())) {
+            output.push_back(Pair("address", address));
+            output.push_back(Pair("tokenName", tokenNameOut));
+            output.push_back(Pair("txid", it->first.txhash.GetHex()));
+            output.push_back(Pair("outputIndex", (int)it->first.index));
+            output.push_back(Pair("script", HexStr(it->second.script.begin(), it->second.script.end())));
+            output.push_back(Pair("satoshis", it->second.satoshis));
+            output.push_back(Pair("height", it->second.blockHeight));
+            utxos.push_back(output);
+        }
     }
 
     if (includeChainInfo) {
@@ -1129,7 +1131,8 @@ UniValue getaddressbalance(const JSONRPCRequest& request)
                     balances[tokenName].first += it->second;
                 }
 
-                if ((int)chainActive.Height() > it->first.timeLock) {
+                if (it->first.timeLock > ((int64_t)it->first.timeLock < LOCKTIME_THRESHOLD ? (int64_t)chainActive.Height() : (int64_t)chainActive.Tip()->GetMedianTimePast()))
+                {
                     balances[tokenName].second += it->second;
                 } else {
                     locked[tokenName] += it->second;
