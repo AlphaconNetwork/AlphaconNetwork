@@ -1209,7 +1209,6 @@ void static ProcessTokenGetData(CNode* pfrom, const Consensus::Params& consensus
                 continue;
             }
 
-            bool push = false;
             auto currentActiveTokenCache = GetCurrentTokenCache();
             if (currentActiveTokenCache) {
                 CNewToken token;
@@ -1219,17 +1218,12 @@ void static ProcessTokenGetData(CNode* pfrom, const Consensus::Params& consensus
                     auto data = CDatabasedTokenData(token, height, hash);
                     ptokensCache->Put(inv.name, data);
                     connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::TOKENDATA, SerializedTokenData(data)));
-                    push = true;
                 } else {
                     CDatabasedTokenData data;
                     data.token.strName = "_NF"; // Return _NF for NOT Found
                     connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::TOKENDATA, SerializedTokenData(data)));
                 }
             }
-
-//            if (!push) {
-//                vNotFound.push_back(inv);
-//            }
         }
     }
 

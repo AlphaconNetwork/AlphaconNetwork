@@ -880,7 +880,7 @@ UniValue getaddressutxos(const JSONRPCRequest& request)
     for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator it=unspentOutputs.begin(); it!=unspentOutputs.end(); it++) {
         UniValue output(UniValue::VOBJ);
         std::string address;
-        uint32_t nTokenLockTime;
+        uint32_t nTokenLockTime = 0;
         if (!getAddressFromIndex(it->first.type, it->first.hashBytes, address)) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Unknown address type");
         }
@@ -893,7 +893,7 @@ UniValue getaddressutxos(const JSONRPCRequest& request)
             }
         }
 
-        if (nTokenLockTime > ((int64_t)nTokenLockTime < LOCKTIME_THRESHOLD ? (int64_t)it->second.blockHeight : (int64_t)chainActive.Tip()->GetMedianTimePast())) {
+        if (nTokenLockTime < ((int64_t)nTokenLockTime < LOCKTIME_THRESHOLD ? (int64_t)it->second.blockHeight : (int64_t)chainActive.Tip()->GetMedianTimePast())) {
             output.push_back(Pair("address", address));
             output.push_back(Pair("tokenName", tokenNameOut));
             output.push_back(Pair("txid", it->first.txhash.GetHex()));
@@ -1131,7 +1131,7 @@ UniValue getaddressbalance(const JSONRPCRequest& request)
                     balances[tokenName].first += it->second;
                 }
 
-                if (it->first.timeLock > ((int64_t)it->first.timeLock < LOCKTIME_THRESHOLD ? (int64_t)chainActive.Height() : (int64_t)chainActive.Tip()->GetMedianTimePast()))
+                if (it->first.timeLock < ((int64_t)it->first.timeLock < LOCKTIME_THRESHOLD ? (int64_t)chainActive.Height() : (int64_t)chainActive.Tip()->GetMedianTimePast()))
                 {
                     balances[tokenName].second += it->second;
                 } else {
@@ -1140,14 +1140,20 @@ UniValue getaddressbalance(const JSONRPCRequest& request)
             }
 
         UniValue result(UniValue::VARR);
+        auto currentActiveTokenCache = GetCurrentTokenCache();
 
         for (std::map<std::string, std::pair<CAmount, CAmount>>::const_iterator it = balances.begin();
                 it != balances.end(); it++) {
+
+            CNewToken token;
+            currentActiveTokenCache->GetTokenMetaDataIfExists(it->first, token);
+
             UniValue balance(UniValue::VOBJ);
             balance.push_back(Pair("tokenName", it->first));
             balance.push_back(Pair("balance", it->second.second));
             balance.push_back(Pair("received", it->second.first));
             balance.push_back(Pair("locked", locked[it->first]));
+            balance.push_back(Pair("units", token.units));
             result.push_back(balance);
         }
 

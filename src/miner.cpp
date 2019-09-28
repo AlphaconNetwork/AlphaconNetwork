@@ -95,8 +95,6 @@ bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& n
     CMutableTransaction txCoinStake(*pblock->vtx[1]);
     txCoinStake.nTime = pblock->nTime;
 
-    int64_t nSearchTime = txCoinStake.nTime; // search to current time
-
     if (wallet.CreateCoinStake(wallet, pblock->nBits, nTotalFees, pblock->nTime, txCoinStake, key))
     {
         if (txCoinStake.nTime >= chainActive.Tip()->GetMedianTimePast()+1)

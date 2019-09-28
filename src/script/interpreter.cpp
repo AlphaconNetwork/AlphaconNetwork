@@ -999,8 +999,9 @@ bool EvalScript(std::vector<std::vector<unsigned char> > &stack, const CScript &
                         }
                         bool fSuccess = checker.CheckSig(vchSig, vchPubKey, scriptCode, sigversion);
 
-                        if (!fSuccess && (flags & SCRIPT_VERIFY_NULLFAIL) && vchSig.size())
+                        if (!fSuccess && (flags & SCRIPT_VERIFY_NULLFAIL) && vchSig.size()) {
                             return set_error(serror, SCRIPT_ERR_SIG_NULLFAIL);
+                        }
 
                         popstack(stack);
                         popstack(stack);
@@ -1380,6 +1381,7 @@ uint256 SignatureHash(const CScript &scriptCode, const CTransaction &txTo, unsig
     // Serialize and hash
     CHashWriter ss(SER_GETHASH, 0);
     ss << txTmp << nHashType;
+
     return ss.GetHash();
 }
 
@@ -1398,6 +1400,7 @@ bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char> &vch
     std::vector<unsigned char> vchSig(vchSigIn);
     if (vchSig.empty())
         return false;
+
     int nHashType = vchSig.back();
     vchSig.pop_back();
 
