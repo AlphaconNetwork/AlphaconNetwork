@@ -1177,7 +1177,7 @@ UniValue getaddressbalance(const JSONRPCRequest& request)
             if (it->second > 0) {
                 received += it->second;
             }
-            if ((int)chainActive.Height() > it->first.timeLock) {
+            if (it->first.timeLock < ((int64_t)it->first.timeLock < LOCKTIME_THRESHOLD ? (int64_t)chainActive.Height() : (int64_t)chainActive.Tip()->GetMedianTimePast())) {
                 balance += it->second;
             } else {
                 locked += it->second;
