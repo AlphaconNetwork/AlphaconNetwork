@@ -28,6 +28,7 @@
 #include "wallet/feebumper.h"
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
+#include "tokens/tokens.h"
 
 #include <init.h>  // For StartShutdown
 
@@ -2885,13 +2886,14 @@ UniValue listunspenttoken(const JSONRPCRequest& request)
         return NullUniValue;
     }
 
-    if (request.fHelp || request.params.size() < 1 && request.params.size() > 6)
+    if (request.fHelp || (request.params.size() < 1 && request.params.size() > 6))
         throw std::runtime_error(
             "listunspenttoken ( token_name minconf maxconf  [\"addresses\",...] [include_unsafe] [query_options])\n"
             "\nReturns array of unspent transaction outputs\n"
             "with between minconf and maxconf (inclusive) confirmations.\n"
             "Optionally filter to only include txouts paid to specified addresses.\n"
             "\nArguments:\n"
+            "1. name             (string) Name of the token\n"
             "2. minconf          (numeric, optional, default=1) The minimum confirmations to filter\n"
             "3. maxconf          (numeric, optional, default=9999999) The maximum confirmations to filter\n"
             "4. \"addresses\"      (string) A json array of alphacon addresses to filter\n"
@@ -2952,7 +2954,7 @@ UniValue listunspenttoken(const JSONRPCRequest& request)
         nMaxDepth = request.params[2].get_int();
     }
 
-    std::set<CTxDestination> destinations;
+    std::set<std::string> destinations;
     if (!request.params[3].isNull()) {
         RPCTypeCheckArgument(request.params[3], UniValue::VARR);
         UniValue inputs = request.params[3].get_array();
@@ -2962,7 +2964,7 @@ UniValue listunspenttoken(const JSONRPCRequest& request)
             if (!IsValidDestination(dest)) {
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Alphacon address: ") + input.get_str());
             }
-            if (!destinations.insert(dest).second) {
+            if (!destinations.insert(input.get_str()).second) {
                 throw JSONRPCError(RPC_INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ") + input.get_str());
             }
         }
@@ -3004,35 +3006,27 @@ UniValue listunspenttoken(const JSONRPCRequest& request)
     for (auto token : mapTokens) {
         if (token.first == tokenName) {
             for (const COutput& out : token.second) {
-                CTxDestination address;
                 const CScript& scriptPubKey = out.tx->tx->vout[out.i].scriptPubKey;
-                bool fValidAddress = ExtractDestination(scriptPubKey, address);
+                std::string address;
+                CNewToken tokenData;
+                CTokenTransfer tokenTransfer;
+                TransferTokenFromScript(scriptPubKey, tokenTransfer, address);
 
-                if (destinations.size() && (!fValidAddress || !destinations.count(address)))
+                auto currentActiveTokenCache = GetCurrentTokenCache();
+                if (!currentActiveTokenCache)
+                    throw JSONRPCError(RPC_INTERNAL_ERROR, "Token cache isn't available.");
+
+                currentActiveTokenCache->GetTokenMetaDataIfExists(tokenTransfer.strName, tokenData);
+
+                if (destinations.size() && !destinations.count(address))
                     continue;
 
                 UniValue entry(UniValue::VOBJ);
                 entry.push_back(Pair("txid", out.tx->GetHash().GetHex()));
                 entry.push_back(Pair("vout", out.i));
-
-                if (fValidAddress) {
-                    entry.push_back(Pair("address", EncodeDestination(address)));
-
-                    if (pwallet->mapAddressBook.count(address)) {
-                        entry.push_back(Pair("account", pwallet->mapAddressBook[address].name));
-                    }
-
-                    if (scriptPubKey.IsPayToScriptHash()) {
-                        const CScriptID& hash = boost::get<CScriptID>(address);
-                        CScript redeemScript;
-                        if (pwallet->GetCScript(hash, redeemScript)) {
-                            entry.push_back(Pair("redeemScript", HexStr(redeemScript.begin(), redeemScript.end())));
-                        }
-                    }
-                }
-
+                entry.push_back(Pair("address", address));
                 entry.push_back(Pair("scriptPubKey", HexStr(scriptPubKey.begin(), scriptPubKey.end())));
-                entry.push_back(Pair("amount", ValueFromAmount(out.tx->tx->vout[out.i].nValue)));
+                entry.push_back(Pair("amount", ValueFromAmount(tokenTransfer.nAmount, tokenData.units)));
                 entry.push_back(Pair("confirmations", out.nDepth));
                 entry.push_back(Pair("spendable", out.fSpendable));
                 entry.push_back(Pair("solvable", out.fSolvable));
