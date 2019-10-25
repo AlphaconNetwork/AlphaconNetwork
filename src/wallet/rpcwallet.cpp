@@ -108,18 +108,6 @@ void WalletTxToJSON(const CWalletTx& wtx, UniValue& entry)
     entry.push_back(Pair("time", wtx.GetTxTime()));
     entry.push_back(Pair("timereceived", (int64_t)wtx.nTimeReceived));
 
-    // Add opt-in RBF status
-    std::string rbfStatus = "no";
-//    if (confirms <= 0) {
-//        LOCK(mempool.cs);
-//        RBFTransactionState rbfState = IsRBFOptIn(wtx, mempool);
-//        if (rbfState == RBF_TRANSACTIONSTATE_UNKNOWN)
-//            rbfStatus = "unknown";
-//        else if (rbfState == RBF_TRANSACTIONSTATE_REPLACEABLE_BIP125)
-//            rbfStatus = "yes";
-//    }
-    entry.push_back(Pair("bip125-replaceable", rbfStatus));
-
     for (const std::pair<std::string, std::string>& item : wtx.mapValue)
         entry.push_back(Pair(item.first, item.second));
 }
@@ -1577,28 +1565,60 @@ void ListTransactions(CWallet* const pwallet, const CWalletTx& wtx, const std::s
     if (AreTokensDeployed()) {
         if (listTokensReceived.size() > 0 && wtx.GetDepthInMainChain() >= nMinDepth) {
             for (const CTokenOutputEntry &data : listTokensReceived) {
+                int confirms = wtx.GetDepthInMainChain();
                 UniValue entry(UniValue::VOBJ);
+                uint256 hash = wtx.GetHash();
 
                 entry.push_back(Pair("token_type", GetTxnOutputType(data.type)));
                 entry.push_back(Pair("token_name", data.tokenName));
                 entry.push_back(Pair("amount", ValueFromAmount(data.nAmount)));
-                entry.push_back(Pair("destination", EncodeDestination(data.destination)));
+                entry.push_back(Pair("address", EncodeDestination(data.destination)));
                 entry.push_back(Pair("vout", data.vout));
                 entry.push_back(Pair("category", "receive"));
+                entry.push_back(Pair("blockhash", wtx.hashBlock.GetHex()));
+                entry.push_back(Pair("blockindex", wtx.nIndex));
+                entry.push_back(Pair("blocktime", mapBlockIndex[wtx.hashBlock]->GetBlockTime()));
+                entry.push_back(Pair("txid", hash.GetHex()));
+                entry.push_back(Pair("confirmations", confirms));
+
+                UniValue conflicts(UniValue::VARR);
+                for (const uint256& conflict : wtx.GetConflicts())
+                    conflicts.push_back(conflict.GetHex());
+                entry.push_back(Pair("walletconflicts", conflicts));
+
+                entry.push_back(Pair("time", wtx.GetTxTime()));
+                entry.push_back(Pair("timereceived", (int64_t)wtx.nTimeReceived));
+
                 retTokens.push_back(entry);
             }
         }
 
         if ((!listTokensSent.empty() || nFee != 0) && (fAllAccounts || strAccount == strSentAccount)) {
             for (const CTokenOutputEntry &data : listTokensSent) {
+                int confirms = wtx.GetDepthInMainChain();
                 UniValue entry(UniValue::VOBJ);
+                uint256 hash = wtx.GetHash();
 
                 entry.push_back(Pair("token_type", GetTxnOutputType(data.type)));
                 entry.push_back(Pair("token_name", data.tokenName));
                 entry.push_back(Pair("amount", ValueFromAmount(data.nAmount)));
-                entry.push_back(Pair("destination", EncodeDestination(data.destination)));
+                entry.push_back(Pair("address", EncodeDestination(data.destination)));
                 entry.push_back(Pair("vout", data.vout));
                 entry.push_back(Pair("category", "send"));
+                entry.push_back(Pair("blockhash", wtx.hashBlock.GetHex()));
+                entry.push_back(Pair("blockindex", wtx.nIndex));
+                entry.push_back(Pair("blocktime", mapBlockIndex[wtx.hashBlock]->GetBlockTime()));
+                entry.push_back(Pair("txid", hash.GetHex()));
+                entry.push_back(Pair("confirmations", confirms));
+
+                UniValue conflicts(UniValue::VARR);
+                for (const uint256& conflict : wtx.GetConflicts())
+                    conflicts.push_back(conflict.GetHex());
+                entry.push_back(Pair("walletconflicts", conflicts));
+
+                entry.push_back(Pair("time", wtx.GetTxTime()));
+                entry.push_back(Pair("timereceived", (int64_t)wtx.nTimeReceived));
+
                 retTokens.push_back(entry);
             }
         }
@@ -1729,7 +1749,7 @@ UniValue listtransactions(const JSONRPCRequest& request)
     {
         CWalletTx *const pwtx = (*it).second.first;
         if (pwtx != nullptr)
-            ListTransactions(pwallet, *pwtx, strAccount, 0, true, ret, filter);
+            ListTransactions(pwallet, *pwtx, strAccount, 0, true, ret, ret, filter);
         CAccountingEntry *const pacentry = (*it).second.second;
         if (pacentry != nullptr)
             AcentryToJSON(*pacentry, strAccount, ret);
